@@ -1,4 +1,4 @@
-name: Build Windows Executable
+name: Build Windows Executable v2
 
 on:
   push:
@@ -26,30 +26,47 @@ jobs:
         pyinstaller --onefile --windowed --name=MaximoApp --add-data="frontend/templates;frontend/templates" --add-data="frontend/static;frontend/static" --add-data=".env;." --hidden-import=backend.auth.token_manager --hidden-import=backend.services.enhanced_profile_service --hidden-import=backend.services.enhanced_workorder_service --hidden-import=backend.api --hidden-import=dotenv app.py
     
     - name: Create Windows distribution package
+      shell: pwsh
       run: |
-        mkdir MaximoApp-Windows-Ready
-        copy dist\MaximoApp.exe MaximoApp-Windows-Ready\
-        echo # Maximo Configuration > MaximoApp-Windows-Ready\.env
-        echo MAXIMO_BASE_URL=https://your-maximo-server.com/maximo >> MaximoApp-Windows-Ready\.env
-        echo MAXIMO_API_KEY=your_api_key_here >> MaximoApp-Windows-Ready\.env
-        echo MAXIMO_VERIFY_SSL=True >> MaximoApp-Windows-Ready\.env
-        echo FLASK_SECRET_KEY=maximo_secret_key >> MaximoApp-Windows-Ready\.env
-        echo APP_SECRET_KEY=app_secret_key >> MaximoApp-Windows-Ready\.env
-        echo DEBUG=False >> MaximoApp-Windows-Ready\.env
-        echo @echo off > MaximoApp-Windows-Ready\run_maximo.bat
-        echo echo Starting Maximo Application... >> MaximoApp-Windows-Ready\run_maximo.bat
-        echo echo The application will open in your web browser >> MaximoApp-Windows-Ready\run_maximo.bat
-        echo echo To stop the application, close this window >> MaximoApp-Windows-Ready\run_maximo.bat
-        echo echo. >> MaximoApp-Windows-Ready\run_maximo.bat
-        echo MaximoApp.exe >> MaximoApp-Windows-Ready\run_maximo.bat
-        echo pause >> MaximoApp-Windows-Ready\run_maximo.bat
-        echo MAXIMO APPLICATION FOR WINDOWS > MaximoApp-Windows-Ready\README.txt
-        echo =============================== >> MaximoApp-Windows-Ready\README.txt
-        echo. >> MaximoApp-Windows-Ready\README.txt
-        echo SETUP: >> MaximoApp-Windows-Ready\README.txt
-        echo 1. Edit .env file with your Maximo server details >> MaximoApp-Windows-Ready\README.txt
-        echo 2. Double-click run_maximo.bat to start >> MaximoApp-Windows-Ready\README.txt
-        echo 3. Application will open in your web browser >> MaximoApp-Windows-Ready\README.txt
+        New-Item -ItemType Directory -Name "MaximoApp-Windows-Ready"
+        Copy-Item "dist\MaximoApp.exe" "MaximoApp-Windows-Ready\"
+
+        # Create .env file
+        @"
+        # Maximo Configuration
+        MAXIMO_BASE_URL=https://your-maximo-server.com/maximo
+        MAXIMO_API_KEY=your_api_key_here
+        MAXIMO_VERIFY_SSL=True
+        FLASK_SECRET_KEY=maximo_secret_key
+        APP_SECRET_KEY=app_secret_key
+        DEBUG=False
+        "@ | Out-File -FilePath "MaximoApp-Windows-Ready\.env" -Encoding utf8
+
+        # Create batch launcher
+        @"
+        @echo off
+        echo Starting Maximo Application...
+        echo The application will open in your web browser
+        echo To stop the application, close this window
+        echo.
+        MaximoApp.exe
+        pause
+        "@ | Out-File -FilePath "MaximoApp-Windows-Ready\run_maximo.bat" -Encoding ascii
+
+        # Create README
+        @"
+        MAXIMO APPLICATION FOR WINDOWS
+        ===============================
+
+        SETUP:
+        1. Edit .env file with your Maximo server details
+        2. Double-click run_maximo.bat to start
+        3. Application will open in your web browser
+
+        REQUIREMENTS:
+        - No additional software needed
+        - All dependencies included
+        "@ | Out-File -FilePath "MaximoApp-Windows-Ready\README.txt" -Encoding utf8
     
     - name: Upload Windows executable
       uses: actions/upload-artifact@v4
