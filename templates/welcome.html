@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome - Maximo OAuth{% endblock %}
+
+{% block content %}
+<div class="welcome-header text-center mb-4">
+    <h2 class="fw-bold">
+        <i class="fas fa-check-circle me-2"></i>Authentication Successful
+    </h2>
+    <div class="badge bg-warning text-dark mb-3">Test (UAT) Environment</div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-3">
+            <div class="user-avatar me-3">
+                <i class="fas fa-user-circle fa-3x text-primary"></i>
+            </div>
+            <div>
+                <h5 class="card-title mb-1">Hello, {{ username }}!</h5>
+                <p class="text-muted mb-0">You have successfully authenticated with Maximo</p>
+            </div>
+        </div>
+
+        <div class="alert alert-success">
+            <i class="fas fa-info-circle me-2"></i>
+            Your OAuth authentication was successful. You now have an active session with Maximo.
+        </div>
+
+        <div class="card bg-light mb-3">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-tachometer-alt me-2"></i>Login Performance Metrics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <strong>Login Duration:</strong>
+                            <span class="badge bg-success ms-2">{{ "%.2f"|format(login_duration) }} seconds</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Authentication Method:</strong>
+                            <span class="badge bg-primary ms-2">Lightning-Fast OAuth</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <strong>Session Expires:</strong>
+                            <span class="badge bg-info ms-2">{{ ((token_expires_at - time.time()) / 60)|int }} minutes</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Optimizations:</strong>
+                            <span class="badge bg-secondary ms-2">Connection Pooling</span>
+                            <span class="badge bg-secondary ms-2">Token Caching</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="card-text">
+            This is a base implementation that only handles authentication. No asset data or other Maximo functionality is included.
+        </p>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('profile') }}" class="btn btn-primary me-2">
+                <i class="fas fa-user me-2"></i>View Profile
+            </a>
+            <a href="/enhanced-workorders" class="btn btn-success me-2">
+                <i class="fas fa-clipboard-list me-2"></i>Work Orders
+            </a>
+            <a href="/api-docs" class="btn btn-info me-2">
+                <i class="fas fa-code me-2"></i>API Documentation
+            </a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-primary">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-cog me-2"></i>OAuth Details
+        </h5>
+    </div>
+    <div class="card-body p-4">
+        <p>This implementation uses OAuth to authenticate with Maximo. The authentication flow includes:</p>
+
+        <ol>
+            <li>Initiating the OAuth flow by accessing the Maximo URL</li>
+            <li>Finding the authentication endpoint</li>
+            <li>Submitting credentials to the login endpoint</li>
+            <li>Extracting and storing tokens from the response</li>
+            <li>Verifying the authentication by accessing a protected resource</li>
+        </ol>
+
+        <div class="mt-3">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="themeSwitch">
+                <label class="form-check-label" for="themeSwitch">Dark Mode</label>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

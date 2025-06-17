@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#f8f9fa" rx="10" ry="10"/>
+  
+  <!-- Title -->
+  <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold" fill="#0f3460">Lightning-Fast Maximo OAuth Architecture</text>
+  
+  <!-- Layers -->
+  <g id="layers">
+    <!-- Presentation Layer -->
+    <rect x="100" y="80" width="600" height="60" rx="5" ry="5" fill="#3498db" opacity="0.8"/>
+    <text x="400" y="115" font-family="Arial" font-size="18" text-anchor="middle" fill="white" font-weight="bold">Presentation Layer</text>
+    <text x="400" y="135" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Mobile-first UI, Loading Indicators, Theme Support</text>
+    
+    <!-- Application Layer -->
+    <rect x="100" y="150" width="600" height="60" rx="5" ry="5" fill="#2ecc71" opacity="0.8"/>
+    <text x="400" y="185" font-family="Arial" font-size="18" text-anchor="middle" fill="white" font-weight="bold">Application Layer</text>
+    <text x="400" y="205" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Flask Web App, Background Processing, Session Management</text>
+    
+    <!-- Authentication Layer -->
+    <rect x="100" y="220" width="600" height="60" rx="5" ry="5" fill="#e74c3c" opacity="0.8"/>
+    <text x="400" y="255" font-family="Arial" font-size="18" text-anchor="middle" fill="white" font-weight="bold">Authentication Layer</text>
+    <text x="400" y="275" font-family="Arial" font-size="12" text-anchor="middle" fill="white">OAuth Token Management, Token Caching, Connection Pooling</text>
+    
+    <!-- Network Layer -->
+    <rect x="100" y="290" width="600" height="60" rx="5" ry="5" fill="#f39c12" opacity="0.8"/>
+    <text x="400" y="325" font-family="Arial" font-size="18" text-anchor="middle" fill="white" font-weight="bold">Network Layer</text>
+    <text x="400" y="345" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Optimized HTTP Requests, Timeout Management, Error Handling</text>
+    
+    <!-- Storage Layer -->
+    <rect x="100" y="360" width="600" height="60" rx="5" ry="5" fill="#9b59b6" opacity="0.8"/>
+    <text x="400" y="395" font-family="Arial" font-size="18" text-anchor="middle" fill="white" font-weight="bold">Storage Layer</text>
+    <text x="400" y="415" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Secure Token Storage, Cache Management</text>
+  </g>
+  
+  <!-- Arrows -->
+  <g id="arrows" stroke="#2c3e50" stroke-width="2">
+    <line x1="400" y1="140" x2="400" y2="150" marker-end="url(#arrowhead)"/>
+    <line x1="400" y1="210" x2="400" y2="220" marker-end="url(#arrowhead)"/>
+    <line x1="400" y1="280" x2="400" y2="290" marker-end="url(#arrowhead)"/>
+    <line x1="400" y1="350" x2="400" y2="360" marker-end="url(#arrowhead)"/>
+  </g>
+  
+  <!-- Arrowhead marker -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2c3e50"/>
+    </marker>
+  </defs>
+  
+  <!-- External Systems -->
+  <g id="external">
+    <!-- Maximo Server -->
+    <rect x="50" y="440" width="200" height="40" rx="5" ry="5" fill="#34495e" opacity="0.8"/>
+    <text x="150" y="465" font-family="Arial" font-size="14" text-anchor="middle" fill="white" font-weight="bold">Maximo Server</text>
+    
+    <!-- User Browser -->
+    <rect x="550" y="440" width="200" height="40" rx="5" ry="5" fill="#34495e" opacity="0.8"/>
+    <text x="650" y="465" font-family="Arial" font-size="14" text-anchor="middle" fill="white" font-weight="bold">User Browser/Device</text>
+    
+    <!-- Connection lines -->
+    <line x1="150" y1="440" x2="150" y2="420" stroke="#34495e" stroke-width="2" stroke-dasharray="5,5"/>
+    <line x1="650" y1="440" x2="650" y2="80" stroke="#34495e" stroke-width="2" stroke-dasharray="5,5"/>
+  </g>
+  
+  <!-- Footer -->
+  <text x="400" y="490" font-family="Arial" font-size="12" text-anchor="middle" fill="#7f8c8d">Developed by Praba Krishna @2023</text>
+</svg>

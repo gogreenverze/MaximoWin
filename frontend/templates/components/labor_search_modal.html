@@ -1,0 +1,309 @@
+<!-- Labor Search Modal -->
+<div class="modal fade" id="laborSearchModal" tabindex="-1" aria-labelledby="laborSearchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="laborSearchModalLabel">
+                    <i class="fas fa-users me-2"></i>Search Labor Codes
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Search Form -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form id="laborSearchForm">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="laborSearchTerm" class="form-label">
+                                                <i class="fas fa-search me-1"></i>Search Term
+                                            </label>
+                                            <input type="text" class="form-control" id="laborSearchTerm" 
+                                                   placeholder="Enter labor code or description..." 
+                                                   autocomplete="off">
+                                            <div class="form-text">Search by labor code or description (minimum 2 characters)</div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label for="laborSearchLimit" class="form-label">
+                                                <i class="fas fa-list-ol me-1"></i>Limit
+                                            </label>
+                                            <select class="form-select" id="laborSearchLimit">
+                                                <option value="10">10 results</option>
+                                                <option value="20" selected>20 results</option>
+                                                <option value="50">50 results</option>
+                                                <option value="100">100 results</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label for="laborCraftFilter" class="form-label">
+                                                <i class="fas fa-tools me-1"></i>Craft
+                                            </label>
+                                            <input type="text" class="form-control" id="laborCraftFilter" 
+                                                   placeholder="Optional craft filter..." 
+                                                   autocomplete="off">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label for="laborSkillFilter" class="form-label">
+                                                <i class="fas fa-star me-1"></i>Skill Level
+                                            </label>
+                                            <input type="text" class="form-control" id="laborSkillFilter" 
+                                                   placeholder="Optional skill level..." 
+                                                   autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary me-2">
+                                                <i class="fas fa-search me-1"></i>Search Labor Codes
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary" id="clearLaborSearch">
+                                                <i class="fas fa-times me-1"></i>Clear
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Results -->
+                <div id="laborSearchResults" class="d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Search Results
+                        </h6>
+                        <div id="laborSearchStats" class="text-muted small"></div>
+                    </div>
+
+                    <!-- Desktop Table View -->
+                    <div class="labor-results-desktop d-none d-lg-block">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Labor Code</th>
+                                        <th>Person ID</th>
+                                        <th>Work Site</th>
+                                        <th>Status</th>
+                                        <th>Org ID</th>
+                                        <th>Labor ID</th>
+                                        <th>Reported Hrs</th>
+                                        <th>Avail Factor</th>
+                                        <th>Assigned</th>
+                                        <th>Craft & Rates</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="laborResultsTableBody">
+                                    <!-- Results will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Card View -->
+                    <div class="labor-results-mobile d-lg-none">
+                        <div id="laborResultsCards">
+                            <!-- Mobile cards will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="laborSearchEmpty" class="text-center py-5">
+                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">Search for Labor Codes</h5>
+                    <p class="text-muted">Enter a labor code or description to find available labor resources.</p>
+                </div>
+
+                <!-- Loading State -->
+                <div id="laborSearchLoading" class="text-center py-5 d-none">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 class="text-muted">Searching Labor Codes...</h5>
+                    <p class="text-muted">Please wait while we search for available labor resources.</p>
+                </div>
+
+                <!-- Error State -->
+                <div id="laborSearchError" class="alert alert-danger d-none" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Search Error:</strong>
+                    <span id="laborSearchErrorMessage"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex justify-content-between w-100">
+                    <div class="text-muted small" id="laborSearchInfo">
+                        <!-- Search info will be displayed here -->
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-outline-secondary me-2" id="clearLaborCacheBtn">
+                            <i class="fas fa-trash me-1"></i>Clear Cache
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Labor Addition Modal -->
+<div class="modal fade" id="laborAdditionModal" tabindex="-1" aria-labelledby="laborAdditionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="laborAdditionModalLabel">
+                    <i class="fas fa-plus me-2"></i>Add Labor to Task
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="laborAdditionForm">
+                    <!-- Selected Labor Info -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-user me-2"></i>Selected Labor
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="selectedLaborInfo">
+                                <!-- Selected labor info will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Labor Details Form -->
+                    <div class="row g-3">
+                        <!-- Transaction Type -->
+                        <div class="col-md-6">
+                            <label for="laborTransType" class="form-label">
+                                <i class="fas fa-tag me-1"></i>Transaction Type <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="laborTransType" required>
+                                <option value="">Select transaction type</option>
+                                <option value="WORK">WORK - Actual work time</option>
+                                <option value="TRAV">TRAV - Travel time</option>
+                                <option value="WMATL">WMATL - Waiting for materials</option>
+                            </select>
+                            <div class="form-text">Select the type of labor transaction</div>
+                        </div>
+
+                        <!-- Timer Controls -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-stopwatch me-1"></i>Time Tracking
+                            </label>
+                            <div class="d-flex gap-2 align-items-center">
+                                <button type="button" class="btn btn-success btn-sm" id="startTimerBtn">
+                                    <i class="fas fa-play me-1"></i>Start
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm" id="stopTimerBtn" disabled>
+                                    <i class="fas fa-stop me-1"></i>Stop
+                                </button>
+                                <div id="timerDisplay" class="badge bg-secondary fs-6">Time Tracking 00:00:00</div>
+                            </div>
+                            <div class="form-text">Use timer to track work time automatically</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="laborHours" class="form-label">
+                                <i class="fas fa-clock me-1"></i>Regular Hours <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" class="form-control" id="laborHours"
+                                   step="0.25" min="0.25" max="999.9" required
+                                   placeholder="Enter hours (e.g., 8.0)">
+                            <div class="form-text">Enter the number of regular hours for this labor assignment</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="laborPayRate" class="form-label">
+                                <i class="fas fa-dollar-sign me-1"></i>Pay Rate
+                            </label>
+                            <input type="number" class="form-control" id="laborPayRate"
+                                   step="0.01" min="0" placeholder="Enter pay rate">
+                            <div class="form-text">Pay rate for this labor assignment</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="laborStartDate" class="form-label">
+                                <i class="fas fa-calendar-alt me-1"></i>Start Date <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" class="form-control" id="laborStartDate" required>
+                            <div class="form-text">Date when labor work starts</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="laborStartTime" class="form-label">
+                                <i class="fas fa-clock me-1"></i>Start Time
+                            </label>
+                            <select class="form-select" id="laborStartTime">
+                                <option value="">Select start time</option>
+                                <!-- Time options will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="laborFinishDate" class="form-label">
+                                <i class="fas fa-calendar-check me-1"></i>Finish Date
+                            </label>
+                            <input type="date" class="form-control" id="laborFinishDate">
+                            <div class="form-text">Date when labor work finishes (optional)</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="laborFinishTime" class="form-label">
+                                <i class="fas fa-clock me-1"></i>Finish Time
+                            </label>
+                            <select class="form-select" id="laborFinishTime">
+                                <option value="">Select finish time</option>
+                                <!-- Time options will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="laborCraft" class="form-label">
+                                <i class="fas fa-tools me-1"></i>Craft
+                            </label>
+                            <input type="text" class="form-control" id="laborCraft"
+                                   placeholder="Optional craft specification">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="laborSiteId" class="form-label">
+                                <i class="fas fa-map-marker-alt me-1"></i>Site ID
+                            </label>
+                            <input type="text" class="form-control" id="laborSiteId" readonly>
+                            <div class="form-text">Site where labor will be performed</div>
+                        </div>
+                        <div class="col-12">
+                            <label for="laborNotes" class="form-label">
+                                <i class="fas fa-sticky-note me-1"></i>Notes
+                            </label>
+                            <textarea class="form-control" id="laborNotes" rows="3"
+                                      placeholder="Optional notes or remarks for this labor assignment"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Hidden fields for task context -->
+                    <input type="hidden" id="selectedLaborCode">
+                    <input type="hidden" id="taskWonum">
+                    <input type="hidden" id="parentWonum">
+                    <input type="hidden" id="taskId">
+                    <input type="hidden" id="siteId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="submitLaborAddition">
+                    <i class="fas fa-plus me-1"></i>Add Labor to Task
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Labor Search JavaScript -->
+<script src="{{ url_for('static', filename='js/labor_search.js') }}"></script>

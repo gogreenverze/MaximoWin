@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Logging In - Maximo OAuth{% endblock %}
+
+{% block extra_css %}
+<style>
+    .loading-container {
+        text-align: center;
+        padding: 3rem 0;
+    }
+    
+    .spinner {
+        width: 80px;
+        height: 80px;
+        margin: 2rem auto;
+        border: 8px solid rgba(var(--primary-color-rgb), 0.2);
+        border-top: 8px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .progress-container {
+        max-width: 400px;
+        margin: 1.5rem auto;
+        background-color: rgba(var(--primary-color-rgb), 0.1);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        height: 8px;
+        background-color: var(--primary-color);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+    
+    .status-message {
+        margin-top: 1.5rem;
+        font-size: 1.1rem;
+    }
+    
+    .elapsed-time {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-top: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border-0 shadow">
+            <div class="card-body loading-container">
+                <h3 class="mb-3">
+                    <i class="fas fa-key text-primary me-2"></i>
+                    Authenticating with Maximo
+                </h3>
+                
+                <p class="text-muted">
+                    Please wait while we securely connect to Maximo...
+                </p>
+                
+                <div class="spinner"></div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="authProgress"></div>
+                </div>
+                
+                <div class="status-message" id="statusMessage">
+                    Establishing secure connection...
+                </div>
+                
+                <div class="elapsed-time" id="elapsedTime">
+                    Time elapsed: 0 seconds
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBar = document.getElementById('authProgress');
+        const statusMessage = document.getElementById('statusMessage');
+        const elapsedTime = document.getElementById('elapsedTime');
+        let startTime = new Date().getTime();
+        let checkInterval;
+        
+        // Status messages to show during authentication
+        const statusMessages = [
+            "Establishing secure connection...",
+            "Authenticating with Maximo...",
+            "Verifying credentials...",
+            "Retrieving session tokens...",
+            "Finalizing authentication...",
+            "Almost there..."
+        ];
+        
+        // Function to check authentication status
+        function checkAuthStatus() {
+            fetch('/api/auth-status')
+                .then(response => response.json())
+                .then(data => {
+                    // Update elapsed time
+                    const elapsed = Math.floor((new Date().getTime() - startTime) / 1000);
+                    elapsedTime.textContent = `Time elapsed: ${elapsed} seconds`;
+                    
+                    // Update progress bar (max 95% until complete)
+                    const progress = Math.min(95, elapsed * 5);
+                    progressBar.style.width = `${progress}%`;
+                    
+                    // Update status message
+                    if (elapsed < statusMessages.length) {
+                        statusMessage.textContent = statusMessages[elapsed];
+                    } else {
+                        statusMessage.textContent = statusMessages[statusMessages.length - 1];
+                    }
+                    
+                    // Check status
+                    if (data.status === 'success') {
+                        // Authentication successful
+                        progressBar.style.width = '100%';
+                        statusMessage.textContent = "Authentication successful!";
+                        clearInterval(checkInterval);
+                        
+                        // Redirect to welcome page
+                        setTimeout(() => {
+                            window.location.href = "{{ url_for('welcome') }}";
+                        }, 500);
+                    } else if (data.status === 'error') {
+                        // Authentication failed
+                        statusMessage.textContent = `Authentication failed: ${data.message}`;
+                        statusMessage.style.color = 'var(--danger-color)';
+                        clearInterval(checkInterval);
+                        
+                        // Redirect to login page
+                        setTimeout(() => {
+                            window.location.href = "{{ url_for('index') }}";
+                        }, 2000);
+                    }
+                    // If status is 'in_progress', continue checking
+                })
+                .catch(error => {
+                    console.error('Error checking auth status:', error);
+                });
+        }
+        
+        // Check status immediately and then every second
+        checkAuthStatus();
+        checkInterval = setInterval(checkAuthStatus, 1000);
+    });
+</script>
+{% endblock %}

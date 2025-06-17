@@ -1,0 +1,1088 @@
+{% extends 'base.html' %}
+
+{% block title %}Database Sync - Maximo OAuth{% endblock %}
+
+{% block extra_css %}
+<style>
+    .sync-card {
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .sync-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .sync-card .card-header {
+        border-bottom: none;
+        padding: 1rem;
+    }
+
+    .sync-card .card-body {
+        padding: 1.25rem;
+    }
+
+    .sync-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .progress {
+        height: 10px;
+        border-radius: 5px;
+    }
+
+    .sync-status {
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+
+    .sync-timestamp {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+
+    .sync-btn {
+        width: 100%;
+        border-radius: 5px;
+        margin-top: 1rem;
+    }
+
+    .ai-insights {
+        background-color: #f8f9fa;
+        border-left: 4px solid #007bff;
+        padding: 1rem;
+        margin-top: 1.5rem;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+
+    .ai-insights:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+
+    .ai-insights h5 {
+        color: #007bff;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .ai-insight-content {
+        line-height: 1.5;
+    }
+
+    .ai-insight-content strong {
+        color: #495057;
+    }
+
+    .sync-all-btn {
+        position: fixed;
+        bottom: 70px;
+        right: 20px;
+        z-index: 1000;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    @media (min-width: 768px) {
+        .sync-all-btn {
+            bottom: 20px;
+        }
+    }
+
+    .sync-modal .modal-content {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .sync-modal .modal-header {
+        background-color: #f8f9fa;
+        border-bottom: none;
+    }
+
+    .sync-modal .modal-body {
+        padding: 1.5rem;
+    }
+
+    .sync-log {
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 5px;
+        font-family: monospace;
+        font-size: 0.85rem;
+    }
+
+    .sync-log p {
+        margin-bottom: 0.25rem;
+    }
+
+    .sync-log .info {
+        color: #0d6efd;
+    }
+
+    .sync-log .success {
+        color: #198754;
+    }
+
+    .sync-log .warning {
+        color: #ffc107;
+    }
+
+    .sync-log .error {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sync-header text-center mb-4">
+    <h2 class="fw-bold">
+        <i class="fas fa-database me-2"></i>Database Synchronization
+    </h2>
+    <p class="text-muted">Sync Maximo data to your local database for offline use</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card sync-card">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-users me-2"></i>Users & Profiles</h5>
+                    <span class="badge bg-light text-dark">MXAPIPERUSER</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-user-circle sync-icon text-primary"></i>
+                    <h6>User Profiles</h6>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 0%;" id="peruser-progress"></div>
+                </div>
+                <div class="sync-status" id="peruser-status">
+                    <span class="badge bg-secondary">Not synced</span>
+                </div>
+                <div class="sync-timestamp" id="peruser-timestamp">
+                    Last sync: Never
+                </div>
+                <button class="btn btn-primary sync-btn" id="sync-peruser-btn" data-endpoint="peruser">
+                    <i class="fas fa-sync-alt me-2"></i>Sync Users
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card sync-card">
+            <div class="card-header bg-success text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Locations</h5>
+                    <span class="badge bg-light text-dark">MXAPILOCATIONS</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-map-marked-alt sync-icon text-success"></i>
+                    <h6>Site Locations</h6>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" id="locations-progress"></div>
+                </div>
+                <div class="sync-status" id="locations-status">
+                    <span class="badge bg-secondary">Not synced</span>
+                </div>
+                <div class="sync-timestamp" id="locations-timestamp">
+                    Last sync: Never
+                </div>
+                <button class="btn btn-success sync-btn" id="sync-locations-btn" data-endpoint="locations">
+                    <i class="fas fa-sync-alt me-2"></i>Sync Locations
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card sync-card">
+            <div class="card-header bg-info text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Assets</h5>
+                    <span class="badge bg-light text-dark">MXAPIASSET</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-tools sync-icon text-info"></i>
+                    <h6>Operating Assets</h6>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 0%;" id="assets-progress"></div>
+                </div>
+                <div class="sync-status" id="assets-status">
+                    <span class="badge bg-secondary">Not synced</span>
+                </div>
+                <div class="sync-timestamp" id="assets-timestamp">
+                    Last sync: Never
+                </div>
+                <button class="btn btn-info sync-btn" id="sync-assets-btn" data-endpoint="assets">
+                    <i class="fas fa-sync-alt me-2"></i>Sync Assets
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card sync-card">
+            <div class="card-header bg-warning text-dark">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-list-alt me-2"></i>Domains</h5>
+                    <span class="badge bg-light text-dark">MXAPIDOMAIN</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-th-list sync-icon text-warning"></i>
+                    <h6>Domain Values</h6>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" id="domain-progress"></div>
+                </div>
+                <div class="sync-status" id="domain-status">
+                    <span class="badge bg-secondary">Not synced</span>
+                </div>
+                <div class="sync-timestamp" id="domain-timestamp">
+                    Last sync: Never
+                </div>
+                <button class="btn btn-warning sync-btn" id="sync-domain-btn" data-endpoint="domain">
+                    <i class="fas fa-sync-alt me-2"></i>Sync Domains
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card sync-card">
+            <div class="card-header bg-danger text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>Work Orders</h5>
+                    <span class="badge bg-light text-dark">MXAPIWODETAIL</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-tasks sync-icon text-danger"></i>
+                    <h6>Work Order Details</h6>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 0%;" id="wodetail-progress"></div>
+                </div>
+                <div class="sync-status" id="wodetail-status">
+                    <span class="badge bg-secondary">Not synced</span>
+                </div>
+                <div class="sync-timestamp" id="wodetail-timestamp">
+                    Last sync: Never
+                </div>
+                <button class="btn btn-danger sync-btn" id="sync-wodetail-btn" data-endpoint="wodetail">
+                    <i class="fas fa-sync-alt me-2"></i>Sync Work Orders
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card sync-card">
+            <div class="card-header bg-secondary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-boxes me-2"></i>Inventory</h5>
+                    <span class="badge bg-light text-dark">MXAPIINVENTORY</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-warehouse sync-icon text-secondary"></i>
+                    <h6>Inventory Items</h6>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-secondary" role="progressbar" style="width: 0%;" id="inventory-progress"></div>
+                </div>
+                <div class="sync-status" id="inventory-status">
+                    <span class="badge bg-secondary">Not synced</span>
+                </div>
+                <div class="sync-timestamp" id="inventory-timestamp">
+                    Last sync: Never
+                </div>
+                <button class="btn btn-secondary sync-btn" id="sync-inventory-btn" data-endpoint="inventory">
+                    <i class="fas fa-sync-alt me-2"></i>Sync Inventory
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ai-insights">
+    <h5><i class="fas fa-robot me-2"></i>AI Insights</h5>
+    <div id="ai-insight-text" class="ai-insight-content">
+        <i class="fas fa-info-circle text-primary me-2"></i>
+        Sync your data to enable offline capabilities. Start with Users & Profiles for basic functionality.
+    </div>
+</div>
+
+<!-- Sync All Button -->
+<button class="btn btn-primary sync-all-btn" id="sync-all-btn" title="Sync All">
+    <i class="fas fa-sync-alt"></i>
+</button>
+
+<!-- Sync Modal -->
+<div class="modal fade sync-modal" id="syncModal" tabindex="-1" aria-labelledby="syncModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="syncModalLabel">Syncing Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 class="mt-2" id="sync-modal-title">Syncing Users & Profiles</h5>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" id="modal-progress-bar"></div>
+                </div>
+                <div class="sync-log" id="sync-log">
+                    <p class="info">Starting synchronization...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load current sync status
+        loadSyncStatus();
+
+        // Set up sync buttons
+        document.querySelectorAll('.sync-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const endpoint = this.dataset.endpoint;
+                startSync(endpoint);
+            });
+        });
+
+        // Set up sync all button
+        document.getElementById('sync-all-btn').addEventListener('click', function() {
+            startSync('all');
+        });
+    });
+
+    function loadSyncStatus() {
+        // Return a Promise so we can chain it
+        return fetch('/api/sync-status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateSyncUI(data.status);
+                    updateAIInsights(data.status);
+                }
+                return data; // Return the data for chaining
+            })
+            .catch(error => {
+                console.error('Error loading sync status:', error);
+                throw error; // Re-throw the error for proper Promise chaining
+            });
+    }
+
+    function startSync(endpoint) {
+        // Show modal
+        const syncModal = new bootstrap.Modal(document.getElementById('syncModal'));
+        syncModal.show();
+
+        // Update modal title
+        const modalTitle = document.getElementById('sync-modal-title');
+        if (endpoint === 'all') {
+            modalTitle.textContent = 'Syncing All Data';
+        } else {
+            const endpointNames = {
+                'peruser': 'Users & Profiles',
+                'locations': 'Locations',
+                'assets': 'Assets',
+                'domain': 'Domains',
+                'wodetail': 'Work Orders',
+                'inventory': 'Inventory'
+            };
+            modalTitle.textContent = `Syncing ${endpointNames[endpoint]}`;
+        }
+
+        // Reset progress and log
+        document.getElementById('modal-progress-bar').style.width = '0%';
+        document.getElementById('sync-log').innerHTML = '<p class="info">Starting synchronization...</p>';
+
+        // Disable the sync button for this endpoint
+        const syncBtn = document.getElementById(`sync-${endpoint}-btn`);
+        if (syncBtn) {
+            syncBtn.disabled = true;
+            syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Syncing...';
+        }
+
+        // Start the sync process
+        fetch(`/api/sync/${endpoint}`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Start polling for updates
+                    pollSyncStatus(endpoint, data.task_id);
+                } else {
+                    addLogMessage('error', `Error starting sync: ${data.message}`);
+
+                    // Re-enable the sync button
+                    if (syncBtn) {
+                        syncBtn.disabled = false;
+                        syncBtn.innerHTML = `<i class="fas fa-sync-alt me-2"></i>Sync ${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)}`;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error starting sync:', error);
+                addLogMessage('error', `Error: ${error.message}`);
+
+                // Re-enable the sync button
+                if (syncBtn) {
+                    syncBtn.disabled = false;
+                    syncBtn.innerHTML = `<i class="fas fa-sync-alt me-2"></i>Sync ${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)}`;
+                }
+
+                // Show a retry button in the modal
+                const logContainer = document.getElementById('sync-log');
+                const retryButton = document.createElement('button');
+                retryButton.className = 'btn btn-warning mt-3';
+                retryButton.innerHTML = '<i class="fas fa-redo me-2"></i>Retry';
+                retryButton.onclick = function() {
+                    // Remove this button
+                    this.remove();
+                    // Clear the log
+                    logContainer.innerHTML = '<p class="info">Retrying synchronization...</p>';
+                    // Start the sync again
+                    startSync(endpoint);
+                };
+                logContainer.appendChild(retryButton);
+            });
+    }
+
+    function pollSyncStatus(endpoint, taskId) {
+        let lastMessageCount = 0;
+        let completionTimeout = null;
+        let errorCount = 0;
+        const maxErrors = 5; // Maximum number of consecutive errors before giving up
+
+        const pollInterval = setInterval(() => {
+            fetch(`/api/sync-task-status/${taskId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    errorCount = 0; // Reset error count on successful response
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Update progress
+                        const progress = data.progress || 0;
+                        document.getElementById('modal-progress-bar').style.width = `${progress}%`;
+
+                        // Add log messages
+                        if (data.messages && data.messages.length > 0) {
+                            // Only add new messages
+                            if (data.messages.length > lastMessageCount) {
+                                for (let i = lastMessageCount; i < data.messages.length; i++) {
+                                    addLogMessage(data.messages[i].level, data.messages[i].text);
+                                }
+                                lastMessageCount = data.messages.length;
+                            }
+                        }
+
+                        // Check if complete
+                        if (data.status === 'completed') {
+                            clearInterval(pollInterval);
+                            if (completionTimeout) clearTimeout(completionTimeout);
+
+                            addLogMessage('success', 'Synchronization completed successfully!');
+
+                            // Get the record count from the database
+                            fetch('/api/sync-status')
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP error! status: ${response.status}`);
+                                    }
+                                    return response.json();
+                                })
+                                .then(statusData => {
+                                    if (statusData.success && statusData.status) {
+                                        const endpointKey = endpoint === 'peruser' ? 'MXAPIPERUSER' :
+                                                          endpoint === 'locations' ? 'MXAPILOCATIONS' :
+                                                          endpoint === 'assets' ? 'MXAPIASSET' :
+                                                          endpoint === 'domain' ? 'MXAPIDOMAIN' :
+                                                          endpoint === 'wodetail' ? 'MXAPIWODETAIL' :
+                                                          endpoint === 'inventory' ? 'MXAPIINVENTORY' : 'ALL';
+
+                                        if (statusData.status[endpointKey]) {
+                                            const recordCount = statusData.status[endpointKey].record_count || 0;
+                                            addLogMessage('info', `Total records in database: ${recordCount}`);
+                                        }
+                                    }
+
+                                    // Refresh the UI and update AI Insights
+                                    loadSyncStatus()
+                                        .then(() => {
+                                            // After loadSyncStatus completes, fetch the latest sync status again
+                                            // to ensure AI Insights has the most up-to-date information
+                                            return fetch('/api/sync-status');
+                                        })
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                throw new Error(`HTTP error! status: ${response.status}`);
+                                            }
+                                            return response.json();
+                                        })
+                                        .then(data => {
+                                            if (data.success) {
+                                                // If this is a "Sync All" operation, update all endpoints
+                                                if (endpoint === 'all') {
+                                                    // This is a "Sync All" operation, so update all endpoints
+                                                    const now = new Date().toISOString();
+                                                    const endpoints = ['MXAPIPERUSER', 'MXAPILOCATIONS', 'MXAPIASSET', 'MXAPIDOMAIN', 'MXAPIWODETAIL', 'MXAPIINVENTORY'];
+
+                                                    // Update timestamps for all endpoints
+                                                    endpoints.forEach(endpointKey => {
+                                                        if (data.status[endpointKey]) {
+                                                            // Force update the timestamp to now
+                                                            data.status[endpointKey].last_sync = now;
+
+                                                            // Also add a task_id to indicate this endpoint was just synced
+                                                            data.status[endpointKey].task_id = taskId;
+
+                                                            // Store the timestamp in our global store
+                                                            recentTimestamps[endpointKey] = now;
+                                                        }
+                                                    });
+                                                } else {
+                                                    // Update the timestamp for the single endpoint that was just synced
+                                                    const endpointKey = endpoint === 'peruser' ? 'MXAPIPERUSER' :
+                                                                      endpoint === 'locations' ? 'MXAPILOCATIONS' :
+                                                                      endpoint === 'assets' ? 'MXAPIASSET' :
+                                                                      endpoint === 'domain' ? 'MXAPIDOMAIN' :
+                                                                      endpoint === 'wodetail' ? 'MXAPIWODETAIL' :
+                                                                      endpoint === 'inventory' ? 'MXAPIINVENTORY' : null;
+
+                                                    if (endpointKey && data.status[endpointKey]) {
+                                                        // Force update the timestamp to now
+                                                        const now = new Date().toISOString();
+                                                        data.status[endpointKey].last_sync = now;
+
+                                                        // Also add a task_id to indicate this endpoint was just synced
+                                                        data.status[endpointKey].task_id = taskId;
+
+                                                        // Store the timestamp in our global store
+                                                        recentTimestamps[endpointKey] = now;
+                                                    }
+                                                }
+
+                                                // Update AI Insights with the latest data
+                                                updateAIInsights(data.status);
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error updating AI Insights:', error);
+                                        });
+
+                                    // Close the modal after 3 seconds
+                                    setTimeout(() => {
+                                        try {
+                                            const syncModal = bootstrap.Modal.getInstance(document.getElementById('syncModal'));
+                                            if (syncModal) syncModal.hide();
+                                        } catch (e) {
+                                            console.error('Error closing modal:', e);
+                                        }
+                                    }, 3000);
+                                })
+                                .catch(error => {
+                                    console.error('Error getting sync status:', error);
+                                    addLogMessage('warning', `Could not get final record count: ${error.message}`);
+                                    loadSyncStatus(); // Still refresh the UI
+                                });
+                        } else if (data.status === 'failed') {
+                            clearInterval(pollInterval);
+                            if (completionTimeout) clearTimeout(completionTimeout);
+                            addLogMessage('error', `Synchronization failed: ${data.error}`);
+
+                            // Refresh the UI and update AI Insights
+                            loadSyncStatus()
+                                .then(() => {
+                                    // After loadSyncStatus completes, fetch the latest sync status again
+                                    return fetch('/api/sync-status');
+                                })
+                                .then(response => response.json())
+                                .then(statusData => {
+                                    if (statusData.success) {
+                                        // If this is a "Sync All" operation, update all endpoints
+                                        if (endpoint === 'all') {
+                                            // This is a "Sync All" operation, so update all endpoints
+                                            const now = new Date().toISOString();
+                                            const endpoints = ['MXAPIPERUSER', 'MXAPILOCATIONS', 'MXAPIASSET', 'MXAPIDOMAIN', 'MXAPIWODETAIL', 'MXAPIINVENTORY'];
+
+                                            // Update timestamps for all endpoints
+                                            endpoints.forEach(endpointKey => {
+                                                if (statusData.status[endpointKey]) {
+                                                    // Force update the timestamp to now
+                                                    statusData.status[endpointKey].last_sync = now;
+
+                                                    // Also add a task_id to indicate this endpoint was just synced
+                                                    statusData.status[endpointKey].task_id = taskId;
+
+                                                    // Store the timestamp in our global store
+                                                    recentTimestamps[endpointKey] = now;
+                                                }
+                                            });
+                                        } else {
+                                            // Update the timestamp for the single endpoint that was just synced
+                                            const endpointKey = endpoint === 'peruser' ? 'MXAPIPERUSER' :
+                                                              endpoint === 'locations' ? 'MXAPILOCATIONS' :
+                                                              endpoint === 'assets' ? 'MXAPIASSET' :
+                                                              endpoint === 'domain' ? 'MXAPIDOMAIN' :
+                                                              endpoint === 'wodetail' ? 'MXAPIWODETAIL' :
+                                                              endpoint === 'inventory' ? 'MXAPIINVENTORY' : null;
+
+                                            if (endpointKey && statusData.status[endpointKey]) {
+                                                // Force update the timestamp to now
+                                                const now = new Date().toISOString();
+                                                statusData.status[endpointKey].last_sync = now;
+
+                                                // Also add a task_id to indicate this endpoint was just synced
+                                                statusData.status[endpointKey].task_id = taskId;
+
+                                                // Store the timestamp in our global store
+                                                recentTimestamps[endpointKey] = now;
+                                            }
+                                        }
+
+                                        // Update AI Insights with the latest data
+                                        updateAIInsights(statusData.status);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error updating AI Insights after failure:', error);
+                                });
+                        } else {
+                            // If no new messages for 10 seconds, assume completion
+                            if (completionTimeout === null && progress >= 95) {
+                                completionTimeout = setTimeout(() => {
+                                    clearInterval(pollInterval);
+                                    addLogMessage('success', 'Synchronization completed (timeout)');
+
+                                    // Refresh the UI and update AI Insights
+                                    loadSyncStatus()
+                                        .then(() => {
+                                            // After loadSyncStatus completes, fetch the latest sync status again
+                                            return fetch('/api/sync-status');
+                                        })
+                                        .then(response => response.json())
+                                        .then(statusData => {
+                                            if (statusData.success) {
+                                                // If this is a "Sync All" operation, update all endpoints
+                                                if (endpoint === 'all') {
+                                                    // This is a "Sync All" operation, so update all endpoints
+                                                    const now = new Date().toISOString();
+                                                    const endpoints = ['MXAPIPERUSER', 'MXAPILOCATIONS', 'MXAPIASSET', 'MXAPIDOMAIN', 'MXAPIWODETAIL', 'MXAPIINVENTORY'];
+
+                                                    // Update timestamps for all endpoints
+                                                    endpoints.forEach(endpointKey => {
+                                                        if (statusData.status[endpointKey]) {
+                                                            // Force update the timestamp to now
+                                                            statusData.status[endpointKey].last_sync = now;
+
+                                                            // Also add a task_id to indicate this endpoint was just synced
+                                                            statusData.status[endpointKey].task_id = taskId;
+
+                                                            // Store the timestamp in our global store
+                                                            recentTimestamps[endpointKey] = now;
+                                                        }
+                                                    });
+                                                } else {
+                                                    // Update the timestamp for the single endpoint that was just synced
+                                                    const endpointKey = endpoint === 'peruser' ? 'MXAPIPERUSER' :
+                                                                      endpoint === 'locations' ? 'MXAPILOCATIONS' :
+                                                                      endpoint === 'assets' ? 'MXAPIASSET' :
+                                                                      endpoint === 'domain' ? 'MXAPIDOMAIN' :
+                                                                      endpoint === 'wodetail' ? 'MXAPIWODETAIL' :
+                                                                      endpoint === 'inventory' ? 'MXAPIINVENTORY' : null;
+
+                                                    if (endpointKey && statusData.status[endpointKey]) {
+                                                        // Force update the timestamp to now
+                                                        const now = new Date().toISOString();
+                                                        statusData.status[endpointKey].last_sync = now;
+
+                                                        // Also add a task_id to indicate this endpoint was just synced
+                                                        statusData.status[endpointKey].task_id = taskId;
+
+                                                        // Store the timestamp in our global store
+                                                        recentTimestamps[endpointKey] = now;
+                                                    }
+                                                }
+
+                                                // Update AI Insights with the latest data
+                                                updateAIInsights(statusData.status);
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error updating AI Insights after timeout:', error);
+                                        });
+                                }, 10000);
+                            } else if (data.messages && data.messages.length > lastMessageCount) {
+                                // Reset timeout if new messages
+                                if (completionTimeout) {
+                                    clearTimeout(completionTimeout);
+                                    completionTimeout = null;
+                                }
+                            }
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error polling sync status:', error);
+                    errorCount++;
+
+                    if (errorCount >= maxErrors) {
+                        // Too many consecutive errors, stop polling
+                        clearInterval(pollInterval);
+                        if (completionTimeout) clearTimeout(completionTimeout);
+                        addLogMessage('error', `Error polling status: ${error.message}. Giving up after ${maxErrors} attempts.`);
+
+                        // Try to refresh the UI anyway
+                        loadSyncStatus();
+                    } else {
+                        // Log the error but continue polling
+                        addLogMessage('warning', `Error polling status: ${error.message}. Retrying... (${errorCount}/${maxErrors})`);
+                    }
+                });
+        }, 1000);
+    }
+
+    function addLogMessage(level, message) {
+        const logContainer = document.getElementById('sync-log');
+        const logEntry = document.createElement('p');
+        logEntry.className = level;
+        logEntry.textContent = message;
+        logContainer.appendChild(logEntry);
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    function updateSyncUI(status) {
+        // Update each endpoint's UI
+        Object.keys(status).forEach(endpoint => {
+            if (endpoint === 'ALL') return; // Skip the ALL record
+
+            const data = status[endpoint];
+
+            // Map the API endpoint name to the UI element ID
+            const endpointMap = {
+                'MXAPIPERUSER': 'peruser',
+                'MXAPILOCATIONS': 'locations',
+                'MXAPIASSET': 'assets',
+                'MXAPIDOMAIN': 'domain',
+                'MXAPIWODETAIL': 'wodetail',
+                'MXAPIINVENTORY': 'inventory'
+            };
+
+            const uiEndpoint = endpointMap[endpoint] || endpoint.toLowerCase();
+
+            const progressBar = document.getElementById(`${uiEndpoint}-progress`);
+            const statusEl = document.getElementById(`${uiEndpoint}-status`);
+            const timestampEl = document.getElementById(`${uiEndpoint}-timestamp`);
+            const syncBtn = document.getElementById(`sync-${uiEndpoint}-btn`);
+
+            if (progressBar && statusEl && timestampEl) {
+                // Update progress bar (100% if synced)
+                progressBar.style.width = data.status === 'success' ? '100%' : '0%';
+
+                // Update status badge
+                let badgeClass = 'bg-secondary';
+                let statusText = data.status || 'unknown';
+
+                if (statusText === 'success') {
+                    badgeClass = 'bg-success';
+                    statusText = 'Synced';
+                } else if (statusText === 'error' || statusText === 'failed') {
+                    badgeClass = 'bg-danger';
+                    statusText = 'Failed';
+                } else if (statusText === 'in_progress') {
+                    badgeClass = 'bg-info';
+                    statusText = 'Syncing...';
+                } else if (statusText === 'pending') {
+                    badgeClass = 'bg-warning';
+                    statusText = 'Pending';
+                }
+
+                statusEl.innerHTML = `<span class="badge ${badgeClass}">${statusText}</span>`;
+                if (data.record_count) {
+                    statusEl.innerHTML += ` <span class="badge bg-light text-dark">${data.record_count} records</span>`;
+                }
+
+                // Add detailed message if available
+                if (data.message) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'small text-muted mt-1';
+                    messageDiv.textContent = data.message;
+                    statusEl.appendChild(messageDiv);
+                }
+
+                // Update timestamp
+                const lastSync = data.last_sync ? new Date(data.last_sync).toLocaleString() : 'Never';
+                timestampEl.textContent = `Last sync: ${lastSync}`;
+
+                // Update button text based on status
+                if (syncBtn) {
+                    if (data.status === 'in_progress') {
+                        syncBtn.disabled = true;
+                        syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Syncing...';
+                    } else {
+                        syncBtn.disabled = false;
+                        syncBtn.innerHTML = `<i class="fas fa-sync-alt me-2"></i>Sync ${uiEndpoint.charAt(0).toUpperCase() + uiEndpoint.slice(1)}`;
+                    }
+                }
+            }
+        });
+    }
+
+    // Store the most recent timestamps for each endpoint
+    const recentTimestamps = {};
+
+    function updateAIInsights(status) {
+        const insightEl = document.getElementById('ai-insight-text');
+
+        // Get the current time
+        const now = new Date().toISOString();
+
+        // Check for endpoints that were just synced (completed or in progress)
+        const justSyncedEndpoints = [];
+
+        // First, check for endpoints that are marked as in_progress
+        const inProgressEndpoints = Object.keys(status).filter(key =>
+            key !== 'ALL' && status[key].status === 'in_progress'
+        );
+        justSyncedEndpoints.push(...inProgressEndpoints);
+
+        // Also check for endpoints that have a task_id (indicating they were just synced)
+        Object.keys(status).forEach(key => {
+            if (key !== 'ALL' && status[key].task_id) {
+                justSyncedEndpoints.push(key);
+            }
+        });
+
+        // Update timestamps for endpoints that were just synced
+        justSyncedEndpoints.forEach(endpoint => {
+            status[endpoint].last_sync = now;
+            recentTimestamps[endpoint] = now;
+        });
+
+        // For all other endpoints, use the stored timestamp if it's more recent
+        Object.keys(status).forEach(key => {
+            if (key !== 'ALL' && recentTimestamps[key] && !justSyncedEndpoints.includes(key)) {
+                // Compare timestamps and use the more recent one
+                const storedTime = new Date(recentTimestamps[key]).getTime();
+                const currentTime = new Date(status[key].last_sync).getTime();
+                if (storedTime > currentTime) {
+                    status[key].last_sync = recentTimestamps[key];
+                } else {
+                    // Update our stored timestamp if the API returned a more recent one
+                    recentTimestamps[key] = status[key].last_sync;
+                }
+            }
+        });
+
+        // Count synced endpoints
+        const syncedEndpoints = Object.keys(status).filter(key =>
+            key !== 'ALL' && status[key].status === 'success'
+        );
+
+        const totalEndpoints = Object.keys(status).filter(key => key !== 'ALL').length;
+        const syncedCount = syncedEndpoints.length;
+
+        // Check for errors in any endpoint
+        const errorEndpoints = Object.keys(status).filter(key =>
+            key !== 'ALL' && (status[key].status === 'error' || status[key].status === 'failed')
+        );
+
+        // Get total record count
+        const totalRecords = Object.keys(status)
+            .filter(key => key !== 'ALL')
+            .reduce((sum, key) => sum + (status[key].record_count || 0), 0);
+
+        // Create insights based on current state
+        let insights = '';
+
+        // Handle in-progress syncs first
+        if (inProgressEndpoints.length > 0) {
+            const endpointNames = inProgressEndpoints.map(ep => {
+                const friendlyNames = {
+                    'MXAPIPERUSER': 'Users & Profiles',
+                    'MXAPILOCATIONS': 'Locations',
+                    'MXAPIASSET': 'Assets',
+                    'MXAPIDOMAIN': 'Domains',
+                    'MXAPIWODETAIL': 'Work Orders',
+                    'MXAPIINVENTORY': 'Inventory'
+                };
+                return friendlyNames[ep] || ep;
+            }).join(', ');
+
+            insights = `<i class="fas fa-spinner fa-spin me-2"></i> Currently syncing ${endpointNames}. Please wait for the process to complete.`;
+        }
+        // Handle errors next
+        else if (errorEndpoints.length > 0) {
+            const endpointNames = errorEndpoints.map(ep => {
+                const friendlyNames = {
+                    'MXAPIPERUSER': 'Users & Profiles',
+                    'MXAPILOCATIONS': 'Locations',
+                    'MXAPIASSET': 'Assets',
+                    'MXAPIDOMAIN': 'Domains',
+                    'MXAPIWODETAIL': 'Work Orders',
+                    'MXAPIINVENTORY': 'Inventory'
+                };
+                return friendlyNames[ep] || ep;
+            }).join(', ');
+
+            insights = `<i class="fas fa-exclamation-triangle text-warning me-2"></i> Sync errors detected in ${endpointNames}. Please try syncing these endpoints again.`;
+        }
+        // Then handle completed syncs
+        else if (syncedCount === 0) {
+            insights = '<i class="fas fa-info-circle text-primary me-2"></i> Sync your data to enable offline capabilities. Start with Users & Profiles for basic functionality.';
+        }
+        else if (syncedCount < totalEndpoints) {
+            // Get names of synced endpoints
+            const syncedNames = syncedEndpoints.map(ep => {
+                const friendlyNames = {
+                    'MXAPIPERUSER': 'Users & Profiles',
+                    'MXAPILOCATIONS': 'Locations',
+                    'MXAPIASSET': 'Assets',
+                    'MXAPIDOMAIN': 'Domains',
+                    'MXAPIWODETAIL': 'Work Orders',
+                    'MXAPIINVENTORY': 'Inventory'
+                };
+                return friendlyNames[ep] || ep;
+            });
+
+            // Get names of remaining endpoints
+            const remainingEndpoints = Object.keys(status).filter(key =>
+                key !== 'ALL' && status[key].status !== 'success'
+            );
+
+            const remainingNames = remainingEndpoints.map(ep => {
+                const friendlyNames = {
+                    'MXAPIPERUSER': 'Users & Profiles',
+                    'MXAPILOCATIONS': 'Locations',
+                    'MXAPIASSET': 'Assets',
+                    'MXAPIDOMAIN': 'Domains',
+                    'MXAPIWODETAIL': 'Work Orders',
+                    'MXAPIINVENTORY': 'Inventory'
+                };
+                return friendlyNames[ep] || ep;
+            }).join(', ');
+
+            insights = `<i class="fas fa-sync text-success me-2"></i> You've synced ${syncedCount} out of ${totalEndpoints} endpoints (${totalRecords} records). `;
+
+            // Add recommendation for next sync
+            if (remainingEndpoints.length > 0) {
+                insights += `Next, sync ${remainingNames} to enable full offline capabilities.`;
+            }
+        }
+        else {
+            // All endpoints synced
+            const lastSyncTimes = syncedEndpoints.map(ep => new Date(status[ep].last_sync));
+            const oldestSync = new Date(Math.min(...lastSyncTimes.map(d => d.getTime())));
+            const now = new Date();
+            const daysSinceOldestSync = Math.floor((now - oldestSync) / (1000 * 60 * 60 * 24));
+
+            insights = `<i class="fas fa-check-circle text-success me-2"></i> All data is synced! You now have full offline capabilities with ${totalRecords} total records. `;
+
+            if (daysSinceOldestSync > 7) {
+                insights += `Some data is ${daysSinceOldestSync} days old. Consider refreshing your data.`;
+            } else {
+                insights += `Your data is up to date. Remember to sync periodically to keep your offline database current.`;
+            }
+        }
+
+        // Add specific insights based on record counts
+        if (syncedCount > 0 && !inProgressEndpoints.length) {
+            let recordInsights = '<div class="mt-2 small">';
+
+            // Add insights for each synced endpoint
+            syncedEndpoints.forEach(ep => {
+                const data = status[ep];
+                const friendlyNames = {
+                    'MXAPIPERUSER': 'Users & Profiles',
+                    'MXAPILOCATIONS': 'Locations',
+                    'MXAPIASSET': 'Assets',
+                    'MXAPIDOMAIN': 'Domains',
+                    'MXAPIWODETAIL': 'Work Orders',
+                    'MXAPIINVENTORY': 'Inventory'
+                };
+                const name = friendlyNames[ep] || ep;
+
+                // Format the last sync time
+                const lastSync = data.last_sync ? new Date(data.last_sync) : null;
+                const timeAgo = lastSync ? formatTimeAgo(lastSync) : 'never';
+
+                recordInsights += `<div><strong>${name}:</strong> ${data.record_count || 0} records (synced ${timeAgo})</div>`;
+            });
+
+            recordInsights += '</div>';
+            insights += recordInsights;
+        }
+
+        insightEl.innerHTML = insights;
+    }
+
+    // Helper function to format time ago
+    function formatTimeAgo(date) {
+        const now = new Date();
+        const diffMs = now - date;
+        const diffSec = Math.floor(diffMs / 1000);
+        const diffMin = Math.floor(diffSec / 60);
+        const diffHour = Math.floor(diffMin / 60);
+        const diffDay = Math.floor(diffHour / 24);
+
+        if (diffDay > 0) {
+            return diffDay === 1 ? '1 day ago' : `${diffDay} days ago`;
+        } else if (diffHour > 0) {
+            return diffHour === 1 ? '1 hour ago' : `${diffHour} hours ago`;
+        } else if (diffMin > 0) {
+            return diffMin === 1 ? '1 minute ago' : `${diffMin} minutes ago`;
+        } else {
+            return 'just now';
+        }
+    }
+</script>
+{% endblock %}

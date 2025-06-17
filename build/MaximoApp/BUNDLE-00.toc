@@ -1,0 +1,3 @@
+([('MaximoApp',
+   '/Users/arkprabha/Desktop/MAXMOBWITHLABOR_WITH_START/dist/MaximoApp',
+   'EXECUTABLE')],)

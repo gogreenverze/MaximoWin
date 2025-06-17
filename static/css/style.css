@@ -1,0 +1,322 @@
+/* Base styles for Maximo OAuth Login - Mobile First Design */
+
+:root {
+    /* Light theme colors */
+    --primary-color: #2c3e50;
+    --primary-color-rgb: 44, 62, 80;
+    --secondary-color: #3498db;
+    --secondary-color-rgb: 52, 152, 219;
+    --accent-color: #e74c3c;
+    --accent-color-rgb: 231, 76, 60;
+    --success-color: #2ecc71;
+    --success-color-rgb: 46, 204, 113;
+    --warning-color: #f39c12;
+    --warning-color-rgb: 243, 156, 18;
+    --danger-color: #e74c3c;
+    --danger-color-rgb: 231, 76, 60;
+    --light-color: #ecf0f1;
+    --light-color-rgb: 236, 240, 241;
+    --dark-color: #34495e;
+    --dark-color-rgb: 52, 73, 94;
+    --background-color: #f5f7fa;
+    --text-color: #333333;
+    --border-color: #dfe6e9;
+    --card-bg: #ffffff;
+    --header-bg: #2c3e50;
+    --footer-bg: #2c3e50;
+    --mobile-nav-bg: #2c3e50;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --border-radius: 8px;
+    --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* Dark theme colors */
+[data-bs-theme="dark"] {
+    --primary-color: #3498db;
+    --primary-color-rgb: 52, 152, 219;
+    --secondary-color: #2c3e50;
+    --secondary-color-rgb: 44, 62, 80;
+    --accent-color: #e74c3c;
+    --accent-color-rgb: 231, 76, 60;
+    --success-color: #2ecc71;
+    --success-color-rgb: 46, 204, 113;
+    --warning-color: #f39c12;
+    --warning-color-rgb: 243, 156, 18;
+    --danger-color: #e74c3c;
+    --danger-color-rgb: 231, 76, 60;
+    --light-color: #34495e;
+    --light-color-rgb: 52, 73, 94;
+    --dark-color: #ecf0f1;
+    --dark-color-rgb: 236, 240, 241;
+    --background-color: #1a1a2e;
+    --text-color: #ecf0f1;
+    --border-color: #34495e;
+    --card-bg: #16213e;
+    --header-bg: #0f3460;
+    --footer-bg: #0f3460;
+    --mobile-nav-bg: #0f3460;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Base styles */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: var(--transition);
+    padding-top: 60px; /* Space for fixed header */
+    padding-bottom: 70px; /* Space for mobile nav */
+    font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Header styles */
+.app-header {
+    background-color: var(--header-bg);
+    box-shadow: var(--box-shadow);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    z-index: 1030;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.app-title a {
+    color: white;
+    font-weight: bold;
+    font-size: 1.3rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.user-info {
+    color: white;
+    margin-right: 15px;
+    opacity: 0.9;
+}
+
+/* Mobile bottom navigation */
+.mobile-nav {
+    background-color: var(--mobile-nav-bg);
+    box-shadow: 0 -2px 10px var(--shadow-color);
+    height: 60px;
+    z-index: 1020;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.mobile-nav .nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0.5rem 0;
+    font-size: 0.75rem;
+    transition: var(--transition);
+    flex: 1;
+    text-decoration: none;
+}
+
+.mobile-nav .nav-link i {
+    font-size: 1.3rem;
+    margin-bottom: 0.25rem;
+}
+
+.mobile-nav .nav-link.active {
+    color: white;
+}
+
+.mobile-nav .nav-link:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Main content area */
+.app-content {
+    flex: 1;
+    padding: 1.75rem 0;
+    margin-top: 0.5rem;
+}
+
+/* Footer styles */
+.app-footer {
+    background-color: var(--footer-bg);
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+/* Card styles */
+.card {
+    background-color: var(--card-bg);
+    border: none;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+}
+
+.card-header {
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.card-footer {
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+}
+
+/* Login page */
+.login-container {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Alert customization */
+.alert {
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius);
+    border: none;
+    box-shadow: var(--box-shadow);
+    padding: 1rem 1.25rem;
+}
+
+/* Form controls */
+.form-control, .form-select {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    transition: var(--transition);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-color-rgb), 0.25);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.input-group-text {
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+}
+
+/* Button styling */
+.btn {
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(var(--primary-color-rgb), 0.3);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(var(--primary-color-rgb), 0.3);
+}
+
+/* Badge styling */
+.badge {
+    padding: 0.5em 0.75em;
+    font-weight: 500;
+    border-radius: 50px;
+}
+
+/* Theme toggle */
+.theme-toggle {
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: 1rem;
+}
+
+.form-check-input {
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-check-label {
+    cursor: pointer;
+}
+
+/* Welcome page specific styles */
+.welcome-header {
+    margin-bottom: 2rem;
+}
+
+.welcome-header h2 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+/* Helper classes for colors */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+/* Responsive adjustments */
+@media (min-width: 992px) {
+    .app-content {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+}

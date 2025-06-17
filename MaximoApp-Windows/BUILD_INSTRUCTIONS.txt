@@ -1,0 +1,23 @@
+TO BUILD WINDOWS EXECUTABLE:
+============================
+
+On a Windows machine, run:
+
+1. Install Python 3.9+
+2. Install dependencies:
+   pip install pyinstaller flask requests python-dotenv
+
+3. Build executable:
+   pyinstaller --onefile --windowed --name=MaximoApp ^
+   --add-data="frontend/templates;frontend/templates" ^
+   --add-data="frontend/static;frontend/static" ^
+   --add-data=".env;." ^
+   --hidden-import=backend.auth.token_manager ^
+   --hidden-import=backend.services.enhanced_profile_service ^
+   --hidden-import=backend.services.enhanced_workorder_service ^
+   --hidden-import=backend.api ^
+   --hidden-import=dotenv ^
+   app.py
+
+4. Copy dist/MaximoApp.exe to this folder
+5. Distribute the entire folder to users

@@ -1,0 +1,1668 @@
+{% extends "base.html" %}
+
+{% block title %}Work Order {{ workorder.wonum }} - Details{% endblock %}
+
+{% block extra_css %}
+<style>
+    .workorder-detail-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .back-button {
+        margin-bottom: 20px;
+    }
+
+    .workorder-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .workorder-header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        font-weight: 300;
+    }
+
+    .workorder-header .subtitle {
+        opacity: 0.9;
+        font-size: 1.1rem;
+        margin-top: 10px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+    .status-ASSIGN { background-color: #3498db; color: white; }
+    .status-APPR { background-color: #2ecc71; color: white; }
+    .status-INPRG { background-color: #f39c12; color: white; }
+    .status-WMATL { background-color: #e67e22; color: white; }
+    .status-COMP { background-color: #95a5a6; color: white; }
+    .status-CLOSE { background-color: #34495e; color: white; }
+
+    .priority-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+
+    .priority-1 { background-color: #e74c3c; }
+    .priority-2 { background-color: #f39c12; }
+    .priority-3 { background-color: #f1c40f; }
+    .priority-4 { background-color: #2ecc71; }
+    .priority-5 { background-color: #95a5a6; }
+
+    .detail-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+
+    .detail-card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .detail-card-body {
+        padding: 20px;
+    }
+
+    .detail-row {
+        display: flex;
+        margin-bottom: 15px;
+        align-items: center;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #6c757d;
+        min-width: 150px;
+        margin-right: 15px;
+    }
+
+    .detail-value {
+        color: #495057;
+        flex: 1;
+    }
+
+    .detail-value.empty {
+        color: #adb5bd;
+        font-style: italic;
+    }
+
+    .performance-info {
+        background: #e8f5e8;
+        border: 1px solid #c3e6c3;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 20px;
+        font-size: 0.9rem;
+        color: #155724;
+    }
+
+    .task-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        transition: box-shadow 0.2s ease;
+    }
+
+    .task-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .task-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .task-header .d-flex {
+        min-height: 40px;
+    }
+
+    .task-body {
+        padding: 15px 20px;
+    }
+
+    .task-title {
+        font-weight: 600;
+        color: #495057;
+        margin: 0;
+        flex: 1;
+    }
+
+    .task-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .status-dropdown {
+        min-width: 120px;
+    }
+
+    .update-status-btn {
+        padding: 5px 15px;
+        font-size: 0.875rem;
+    }
+
+    .task-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .task-info-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .task-info-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-bottom: 2px;
+    }
+
+    .task-info-value {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .no-tasks {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    .icon {
+        margin-right: 8px;
+        color: #6c757d;
+    }
+
+    .planned-materials-section {
+        border-top: 1px solid #dee2e6;
+        padding-top: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+    .planned-materials-section h6 {
+        color: #495057;
+        font-weight: 600;
+    }
+
+    .btn-group .btn {
+        font-size: 0.875rem;
+    }
+
+    .materials-content {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    /* Desktop List View */
+    .materials-desktop-view {
+        display: block;
+    }
+
+    .materials-mobile-view {
+        display: none;
+    }
+
+    .material-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+    }
+
+    .material-table th,
+    .material-table td {
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+        vertical-align: top;
+    }
+
+    .material-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .material-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .material-itemnum {
+        font-weight: 600;
+        color: #0d6efd;
+    }
+
+    .material-description {
+        max-width: 200px;
+        word-wrap: break-word;
+    }
+
+    .material-cost {
+        font-weight: 500;
+        color: #198754;
+    }
+
+    .material-qty {
+        font-weight: 500;
+        color: #fd7e14;
+    }
+
+    /* Mobile Card View */
+    @media (max-width: 768px) {
+        .materials-desktop-view {
+            display: none;
+        }
+
+        .materials-mobile-view {
+            display: block;
+        }
+
+        .material-card {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .material-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .material-card-itemnum {
+            font-weight: 600;
+            color: #0d6efd;
+            font-size: 1rem;
+        }
+
+        .material-card-qty {
+            font-weight: 500;
+            color: #fd7e14;
+            font-size: 0.9rem;
+        }
+
+        .material-card-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .material-card-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+
+        .material-card-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .material-card-detail-label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 2px;
+        }
+
+        .material-card-detail-value {
+            color: #6c757d;
+        }
+    }
+
+    .material-detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .material-detail-label {
+        color: #6c757d;
+        font-size: 0.75rem;
+        margin-bottom: 1px;
+    }
+
+    .material-detail-value {
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .load-materials-btn {
+        transition: all 0.2s ease;
+    }
+
+    .load-materials-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .materials-loading {
+        text-align: center;
+        padding: 20px;
+        color: #6c757d;
+    }
+
+    .materials-error {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .materials-empty {
+        text-align: center;
+        padding: 15px;
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    /* Material Request Modal Styles */
+    .item-result-card {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 8px;
+        transition: background-color 0.2s ease;
+    }
+
+    .item-result-card:hover {
+        background: #e9ecef;
+    }
+
+    .item-results-container {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 10px;
+        background: white;
+    }
+
+    .request-material-btn {
+        transition: all 0.2s ease;
+    }
+
+    .request-material-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    /* ===== COMPREHENSIVE RESPONSIVE DESIGN ===== */
+
+    /* Extra Small Devices (phones, 576px and down) */
+    @media (max-width: 575.98px) {
+        .workorder-detail-container {
+            padding: 8px;
+            margin: 0;
+        }
+
+        .workorder-header {
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .workorder-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 10px;
+        }
+
+        .workorder-header h1 {
+            font-size: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .workorder-header .subtitle {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+        }
+
+        .detail-card {
+            margin-bottom: 15px;
+        }
+
+        .detail-card-header {
+            padding: 12px 15px;
+            font-size: 0.9rem;
+        }
+
+        .detail-card-body {
+            padding: 15px;
+        }
+
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .detail-label {
+            min-width: auto;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .detail-value {
+            font-size: 0.9rem;
+        }
+
+        /* Task Cards Mobile */
+        .task-card {
+            margin-bottom: 12px;
+        }
+
+        .task-header {
+            padding: 12px 15px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .task-title {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin: 0;
+            order: 2;
+        }
+
+        .toggle-task-btn {
+            order: 1;
+            align-self: flex-end;
+            margin-bottom: 5px;
+        }
+
+        .task-actions {
+            order: 3;
+            width: 100%;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .status-dropdown {
+            min-width: 100%;
+            font-size: 0.85rem;
+        }
+
+        .update-status-btn {
+            width: 100%;
+            font-size: 0.85rem;
+        }
+
+        .task-body {
+            padding: 12px 15px;
+        }
+
+        .task-info {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .task-info-item {
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .task-info-label {
+            font-size: 0.75rem;
+        }
+
+        .task-info-value {
+            font-size: 0.85rem;
+        }
+
+        /* Materials Section Mobile */
+        .planned-materials-section {
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .planned-materials-section .d-flex {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .planned-materials-section h6 {
+            font-size: 0.9rem;
+        }
+
+        .btn-group {
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .btn-group .btn {
+            width: 100%;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+        }
+
+        /* Back Button Mobile */
+        .back-button {
+            margin-bottom: 15px;
+        }
+
+        .back-button .btn {
+            font-size: 0.85rem;
+            padding: 8px 12px;
+        }
+    }
+
+    /* Small Devices (landscape phones, 576px and up) */
+    @media (min-width: 576px) and (max-width: 767.98px) {
+        .workorder-detail-container {
+            padding: 12px;
+        }
+
+        .workorder-header {
+            padding: 20px;
+        }
+
+        .workorder-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .task-header {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .task-title {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .task-actions {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .status-dropdown {
+            min-width: 140px;
+        }
+
+        .task-info {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .planned-materials-section .d-flex {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-group {
+            flex-wrap: wrap;
+        }
+    }
+
+    /* Medium Devices (tablets, 768px and up) */
+    @media (min-width: 768px) and (max-width: 991.98px) {
+        .workorder-detail-container {
+            padding: 15px;
+        }
+
+        .workorder-header h1 {
+            font-size: 2.2rem;
+        }
+
+        .task-info {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .task-actions {
+            flex-wrap: wrap;
+        }
+    }
+
+    /* Large Devices (desktops, 992px and up) */
+    @media (min-width: 992px) and (max-width: 1199.98px) {
+        .workorder-detail-container {
+            max-width: 1000px;
+        }
+
+        .task-info {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    /* Extra Large Devices (large desktops, 1200px and up) */
+    @media (min-width: 1200px) {
+        .workorder-detail-container {
+            max-width: 1200px;
+        }
+
+        .task-info {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    /* Modal Responsive */
+    @media (max-width: 575.98px) {
+        .modal-dialog {
+            margin: 10px;
+            max-width: calc(100% - 20px);
+        }
+
+        .modal-body {
+            padding: 15px;
+        }
+
+        .modal-header {
+            padding: 15px;
+        }
+
+        .modal-footer {
+            padding: 15px;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal-footer .btn {
+            width: 100%;
+        }
+
+        .row .col-md-8,
+        .row .col-md-4,
+        .row .col-md-6 {
+            margin-bottom: 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="workorder-detail-container" data-site-id="{{ user_site_id if user_site_id else 'UNKNOWN' }}">
+    <!-- Back Button -->
+    <div class="back-button">
+        <a href="{{ url_for('enhanced_workorders') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Work Orders
+        </a>
+    </div>
+
+    <!-- Work Order Header -->
+    <div class="workorder-header">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start">
+            <div class="flex-grow-1">
+                <h1 class="mb-2">
+                    <span class="priority-indicator priority-{{ workorder.priority or 3 }}"></span>
+                    <span class="d-inline d-sm-inline">Work Order {{ workorder.wonum }}</span>
+                </h1>
+                <div class="subtitle">{{ workorder.description or 'No description available' }}</div>
+            </div>
+            <div class="mt-2 mt-sm-0">
+                <span class="status-badge status-{{ workorder.status }}">{{ workorder.status or 'Unknown' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Basic Information -->
+    <div class="detail-card">
+        <div class="detail-card-header">
+            <i class="fas fa-info-circle icon"></i>Basic Information
+        </div>
+        <div class="detail-card-body">
+            <div class="detail-row">
+                <div class="detail-label">Work Order Number:</div>
+                <div class="detail-value">{{ workorder.wonum }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Description:</div>
+                <div class="detail-value {{ 'empty' if not workorder.description }}">
+                    {{ workorder.description or 'No description available' }}
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Status:</div>
+                <div class="detail-value">
+                    <span class="status-badge status-{{ workorder.status }}">{{ workorder.status or 'Unknown' }}</span>
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Priority:</div>
+                <div class="detail-value">
+                    <span class="priority-indicator priority-{{ workorder.priority or 3 }}"></span>
+                    {{ workorder.priority or 'Not set' }}
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Work Type:</div>
+                <div class="detail-value {{ 'empty' if not workorder.worktype }}">
+                    {{ workorder.worktype or 'Not specified' }}
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Site:</div>
+                <div class="detail-value">{{ workorder.siteid or user_site_id }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Location & Asset Information -->
+    <div class="detail-card">
+        <div class="detail-card-header">
+            <i class="fas fa-map-marker-alt icon"></i>Location & Asset
+        </div>
+        <div class="detail-card-body">
+            <div class="detail-row">
+                <div class="detail-label">Location:</div>
+                <div class="detail-value {{ 'empty' if not workorder.location }}">
+                    {{ workorder.location or 'No location specified' }}
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Asset Number:</div>
+                <div class="detail-value {{ 'empty' if not workorder.assetnum }}">
+                    {{ workorder.assetnum or 'No asset assigned' }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scheduling Information -->
+    <div class="detail-card">
+        <div class="detail-card-header">
+            <i class="fas fa-calendar-alt icon"></i>Scheduling
+        </div>
+        <div class="detail-card-body">
+            <div class="detail-row">
+                <div class="detail-label">Target Start:</div>
+                <div class="detail-value {{ 'empty' if not workorder.targetstart }}">
+                    {{ workorder.targetstart or 'Not scheduled' }}
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Target Finish:</div>
+                <div class="detail-value {{ 'empty' if not workorder.targetfinish }}">
+                    {{ workorder.targetfinish or 'Not scheduled' }}
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Scheduled Start:</div>
+                <div class="detail-value {{ 'empty' if not workorder.schedstart }}">
+                    {{ workorder.schedstart or 'Not scheduled' }}
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Scheduled Finish:</div>
+                <div class="detail-value {{ 'empty' if not workorder.schedfinish }}">
+                    {{ workorder.schedfinish or 'Not scheduled' }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Work Order Tasks -->
+    <div class="detail-card">
+        <div class="detail-card-header">
+            <i class="fas fa-tasks icon"></i>Work Order Tasks
+            {% if tasks %}
+                <span class="badge bg-primary ms-2">{{ tasks|length }}</span>
+            {% endif %}
+        </div>
+        <div class="detail-card-body">
+            {% if tasks %}
+                {% for task in tasks |sort(attribute='taskid') %}
+                <div class="task-card">
+                    <div class="task-header">
+                        <div class="d-flex flex-column flex-sm-row w-100 align-items-start">
+                            <button class="btn btn-sm btn-outline-secondary toggle-task-btn align-self-end align-self-sm-start me-sm-3 mb-2 mb-sm-0" data-task-id="{{ task.taskid }}">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="task-title flex-grow-1 mb-2 mb-sm-0">
+                                <span class="priority-indicator priority-{{ task.priority or 3 }}"></span>
+                                <span class="d-block d-sm-inline">Task WO: {{ task.wonum }}</span>
+                                <span class="d-block d-sm-inline ms-sm-2">TASK ID: {{ task.taskid }}</span>
+                            </div>
+                            <div class="task-actions d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2">
+                                <span class="status-badge status-{{ task.status }} text-center">{{ task.status or 'Unknown' }}</span>
+                                <select class="form-select form-select-sm status-dropdown" data-task-wonum="{{ task.wonum }}" data-current-status="{{ task.status }}">
+                                    <option value="">Change Status...</option>
+                                    <option value="ASSIGN" {% if task.status == 'ASSIGN' %}disabled{% endif %}>Assign</option>
+                                    <option value="APPR" {% if task.status == 'APPR' %}disabled{% endif %}>Approve</option>
+                                    <option value="INPRG" {% if task.status == 'INPRG' %}disabled{% endif %}>In Progress</option>
+                                    <option value="WMATL" {% if task.status == 'WMATL' %}disabled{% endif %}>Waiting for Material</option>
+                                    <option value="COMP" {% if task.status == 'COMP' %}disabled{% endif %}>Complete</option>
+                                    <option value="CLOSE" {% if task.status == 'CLOSE' %}disabled{% endif %}>Close</option>
+                                </select>
+                                <button class="btn btn-sm btn-primary update-status-btn" data-task-wonum="{{ task.wonum }}">
+                                    <i class="fas fa-save me-1"></i><span class="d-none d-sm-inline">Update</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-body collapse" id="task-body-{{ task.taskid }}">
+                        <div class="detail-row">
+                            <div class="detail-label">Description:</div>
+                            <div class="detail-value {{ 'empty' if not task.description }}">
+                                {{ task.description or 'No description available' }}
+                            </div>
+                        </div>
+                        <div class="task-info">
+                            <div class="task-info-item">
+                                <div class="task-info-label">Work Type</div>
+                                <div class="task-info-value">{{ task.worktype or 'Not specified' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Owner</div>
+                                <div class="task-info-value">{{ task.owner or 'Not Assigned' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Owner Group</div>
+                                <div class="task-info-value">{{ task.owner_group or 'Not Assigned' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Lead</div>
+                                <div class="task-info-value">{{ task.lead or 'Not Assigned' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Supervisor</div>
+                                <div class="task-info-value">{{ task.supervisor or 'Not Assigned' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Crew</div>
+                                <div class="task-info-value">{{ task.crew or 'Not Assigned' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Person Group</div>
+                                <div class="task-info-value">{{ task.persongroup or 'Not Assigned' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Parent</div>
+                                <div class="task-info-value">{{ task.parent or 'No parent' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Task ID</div>
+                                <div class="task-info-value">{{ task.taskid or 'No task ID' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Status</div>
+                                <div class="task-info-value">{{ task.status or 'Unknown' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Status Description</div>
+                                <div class="task-info-value">{{ task.status_description or 'No description' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Site</div>
+                                <div class="task-info-value">{{ task.siteid or 'Unknown' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Assigned To</div>
+                                <div class="task-info-value">{{ task.assignedto or 'Unassigned' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Location</div>
+                                <div class="task-info-value">{{ task.location or 'Not specified' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Asset</div>
+                                <div class="task-info-value">{{ task.assetnum or 'No asset' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Scheduled Start</div>
+                                <div class="task-info-value">{{ task.schedstart or 'Not scheduled' }}</div>
+                            </div>
+                            <div class="task-info-item">
+                                <div class="task-info-label">Estimated Duration</div>
+                                <div class="task-info-value">{{ task.estdur or 'Not estimated' }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Material Actions Section -->
+                        <div class="planned-materials-section mt-4">
+                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-2">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-boxes me-2"></i>Planned Materials
+                                </h6>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-info load-materials-btn"
+                                            data-task-wonum="{{ task.wonum }}"
+                                            data-task-status="{{ task.status }}">
+                                        <i class="fas fa-list me-1"></i><span class="d-none d-sm-inline">Load </span>Materials
+                                    </button>
+                                    {% if task.status in ['APPR', 'ASSIGN', 'WMATL', 'INPRG'] %}
+                                    <button type="button" class="btn btn-sm btn-outline-success search-inventory-btn"
+                                            onclick="openInventorySearchForTask('{{ user_site_id if user_site_id else 'UNKNOWN' }}', '{{ workorder.wonum }}', '{{ task.wonum }}', {{ task.taskid }})"
+                                            title="Search inventory items for this task">
+                                        <i class="fas fa-search me-1"></i><span class="d-none d-sm-inline">Search </span>Inventory
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Materials Content Area -->
+                            <div id="materials-content-{{ task.wonum }}" class="materials-content">
+                                <div class="materials-empty text-center p-3">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <span class="d-block d-sm-inline">Click "Load Materials" to view planned materials for this task</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Labor Actions Section -->
+                        <div class="planned-labor-section mt-4">
+                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-2">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-users me-2"></i>Labor Resources
+                                </h6>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-info load-labor-btn"
+                                            data-task-wonum="{{ task.wonum }}"
+                                            data-task-status="{{ task.status }}">
+                                        <i class="fas fa-list me-1"></i><span class="d-none d-sm-inline">Load </span>Labor
+                                    </button>
+                                    {% if task.status in ['APPR', 'ASSIGN', 'WMATL', 'INPRG', 'READY', 'COMP'] %}
+                                    <button type="button" class="btn btn-sm btn-outline-primary search-labor-btn"
+                                            onclick="openLaborSearchForTask('{{ user_site_id if user_site_id else 'UNKNOWN' }}', '{{ workorder.wonum }}', '{{ task.wonum }}', {{ task.taskid }})"
+                                            title="Search labor codes for this task">
+                                        <i class="fas fa-search me-1"></i><span class="d-none d-sm-inline">Search </span>Labor
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Labor Content Area -->
+                            <div id="labor-content-{{ task.wonum }}" class="labor-content">
+                                <div class="labor-empty text-center p-3">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <span class="d-block d-sm-inline">Click "Load Labor" to view labor assignments for this task</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-tasks">
+                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                    <p>No tasks found for this work order.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Performance Information -->
+    <div class="performance-info">
+        <strong>Performance:</strong>
+        Loaded in {{ "%.3f"|format(load_time) }}s using {{ auth_method }}
+        {% if tasks %}
+        <br><strong>Tasks:</strong> {{ tasks|length }} tasks loaded
+        {% endif %}
+    </div>
+
+
+</div>
+
+
+
+<script>
+// Global site ID variable
+let currentSiteId = null;
+
+// Task status update functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Get site ID from data attribute
+    const container = document.querySelector('.workorder-detail-container');
+    currentSiteId = container ? container.getAttribute('data-site-id') : 'UNKNOWN';
+    console.log('Current Site ID:', currentSiteId);
+    // Handle status update button clicks
+    document.querySelectorAll('.update-status-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const taskWonum = this.getAttribute('data-task-wonum');
+            const dropdown = document.querySelector(`select[data-task-wonum="${taskWonum}"]`);
+            const newStatus = dropdown.value;
+
+            if (!newStatus) {
+                alert('Please select a status first');
+                return;
+            }
+
+            updateTaskStatus(taskWonum, newStatus, this);
+        });
+    });
+
+    // Handle dropdown change to enable/disable update button
+    document.querySelectorAll('.status-dropdown').forEach(dropdown => {
+        dropdown.addEventListener('change', function() {
+            const taskWonum = this.getAttribute('data-task-wonum');
+            const button = document.querySelector(`button[data-task-wonum="${taskWonum}"]`);
+            button.disabled = !this.value;
+        });
+    });
+
+    // Handle planned materials loading
+    document.querySelectorAll('.load-materials-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const taskWonum = this.getAttribute('data-task-wonum');
+            const taskStatus = this.getAttribute('data-task-status');
+            loadPlannedMaterials(taskWonum, taskStatus, this);
+        });
+    });
+
+    // Handle labor loading
+    document.querySelectorAll('.load-labor-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const taskWonum = this.getAttribute('data-task-wonum');
+            const taskStatus = this.getAttribute('data-task-status');
+            loadTaskLabor(taskWonum, taskStatus, this);
+        });
+    });
+
+
+    // Handle task section collapse with accordion behavior
+    document.querySelectorAll('.toggle-task-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const taskId = this.getAttribute('data-task-id');
+            const taskBody = document.getElementById(`task-body-${taskId}`);
+            const icon = this.querySelector('i');
+
+            // Close all other task bodies (accordion behavior)
+            document.querySelectorAll('.task-body').forEach(otherTaskBody => {
+                if (otherTaskBody.id !== `task-body-${taskId}` && otherTaskBody.classList.contains('show')) {
+                    otherTaskBody.classList.remove('show');
+                    // Update the icon for the other task
+                    const otherTaskId = otherTaskBody.id.replace('task-body-', '');
+                    const otherButton = document.querySelector(`[data-task-id="${otherTaskId}"]`);
+                    if (otherButton) {
+                        const otherIcon = otherButton.querySelector('i');
+                        otherIcon.classList.remove('fa-chevron-up');
+                        otherIcon.classList.add('fa-chevron-down');
+                    }
+                }
+            });
+
+            // Toggle current task body
+            if (taskBody.classList.contains('show')) {
+                taskBody.classList.remove('show');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                taskBody.classList.add('show');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+        });
+    });
+
+});
+
+// Global function to open inventory search for a specific task
+function openInventorySearchForTask(siteId, parentWonum, taskWonum, taskId) {
+    // Store task context for material requests
+    // parentWonum = parent work order (e.g. 2021-1744762)
+    // taskWonum = task work order number (e.g. 2021-1835482)
+    // taskId = actual numeric task ID from the task (e.g. 10, 20, 30, etc.)
+    if (typeof materialRequestManager !== 'undefined') {
+        materialRequestManager.setTaskContext(parentWonum, taskWonum, taskId);
+    }
+
+    // Call the regular inventory search
+    openInventorySearch(siteId);
+}
+
+// Utility function to format currency properly - USE ONLY REAL MAXIMO DATA
+function formatCurrency(amount, currencyCode) {
+    // If no real data from Maximo, return "No cost data"
+    if (!currencyCode || amount === null || amount === undefined) {
+        return 'No cost data';
+    }
+
+    const value = parseFloat(amount);
+    if (isNaN(value)) {
+        return 'No cost data';
+    }
+
+    if (currencyCode === 'USD') {
+        return `$${value.toFixed(2)}`;
+    } else if (currencyCode === 'EUR') {
+        return `€${value.toFixed(2)}`;
+    } else if (currencyCode === 'GBP') {
+        return `£${value.toFixed(2)}`;
+    } else {
+        return `${currencyCode} ${value.toFixed(2)}`;
+    }
+}
+
+// Function to format date/time values
+function formatDateTime(dateString) {
+    if (!dateString) return 'Not set';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    } catch (e) {
+        return dateString; // Return as-is if parsing fails
+    }
+}
+
+// Function to generate comprehensive materials display
+function generateMaterialsDisplay(materials) {
+    // Desktop table view
+    let desktopHtml = `
+        <div class="materials-desktop-view">
+            <table class="material-table">
+                <thead>
+                    <tr>
+                        <th>Item Number</th>
+                        <th>Description</th>
+                        <th>Qty</th>
+                        <th>Unit Cost</th>
+                        <th>Line Cost</th>
+                        <th>Vendor</th>
+                        <th>Store Location</th>
+                        <th>Direct Request</th>
+                        <th>Requested By</th>
+                        <th>Required Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    materials.forEach(material => {
+        desktopHtml += `
+            <tr>
+                <td class="material-itemnum">${material.itemnum || 'N/A'}</td>
+                <td class="material-description" title="${material.description_longdescription || material.description || 'No description'}">${material.description || 'No description'}</td>
+                <td class="material-qty">${material.itemqty || 0} ${material.unit || 'EA'}</td>
+                <td class="material-cost">${formatCurrency(material.unitcost || 0, 'USD')}</td>
+                <td class="material-cost">${formatCurrency(material.linecost || 0, 'USD')}</td>
+                <td>${material.vendor || 'N/A'}</td>
+                <td>${material.storeloc || 'N/A'}</td>
+                <td>${material.directreq ? '<span class="badge bg-warning">Yes</span>' : '<span class="badge bg-success">No</span>'}</td>
+                <td>${material.requestby || 'N/A'}</td>
+                <td>${formatDateTime(material.requiredate)}</td>
+            </tr>
+        `;
+    });
+
+    desktopHtml += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    // Mobile card view
+    let mobileHtml = `<div class="materials-mobile-view">`;
+
+    materials.forEach(material => {
+        mobileHtml += `
+            <div class="material-card">
+                <div class="material-card-header">
+                    <div class="material-card-itemnum">${material.itemnum || 'N/A'}</div>
+                    <div class="material-card-qty">${material.itemqty || 0} ${material.unit || 'EA'}</div>
+                </div>
+                <div class="material-card-description">${material.description || 'No description available'}</div>
+                <div class="material-card-details">
+                    <div class="material-card-detail">
+                        <div class="material-card-detail-label">Unit Cost</div>
+                        <div class="material-card-detail-value">${formatCurrency(material.unitcost || 0, 'USD')}</div>
+                    </div>
+                    <div class="material-card-detail">
+                        <div class="material-card-detail-label">Line Cost</div>
+                        <div class="material-card-detail-value">${formatCurrency(material.linecost || 0, 'USD')}</div>
+                    </div>
+                    <div class="material-card-detail">
+                        <div class="material-card-detail-label">Vendor</div>
+                        <div class="material-card-detail-value">${material.vendor || 'N/A'}</div>
+                    </div>
+                    <div class="material-card-detail">
+                        <div class="material-card-detail-label">Store Location</div>
+                        <div class="material-card-detail-value">${material.storeloc || 'N/A'}</div>
+                    </div>
+                    <div class="material-card-detail">
+                        <div class="material-card-detail-label">Direct Request</div>
+                        <div class="material-card-detail-value">${material.directreq ? 'Yes' : 'No'}</div>
+                    </div>
+                    <div class="material-card-detail">
+                        <div class="material-card-detail-label">Requested By</div>
+                        <div class="material-card-detail-value">${material.requestby || 'N/A'}</div>
+                    </div>
+                    <div class="material-card-detail">
+                        <div class="material-card-detail-label">Required Date</div>
+                        <div class="material-card-detail-value">${formatDateTime(material.requiredate)}</div>
+                    </div>
+                    <div class="material-card-detail">
+                        <div class="material-card-detail-label">Line Type</div>
+                        <div class="material-card-detail-value">${material.linetype_description || material.linetype || 'N/A'}</div>
+                    </div>
+                    <div class="material-card-detail">
+                        <div class="material-card-detail-label">Condition Code</div>
+                        <div class="material-card-detail-value">${material.conditioncode || 'N/A'}</div>
+                    </div>
+                    <div class="material-card-detail">
+                        <div class="material-card-detail-label">Reservation Type</div>
+                        <div class="material-card-detail-value">${material.restype_description || material.restype || 'N/A'}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    mobileHtml += `</div>`;
+
+    return desktopHtml + mobileHtml;
+}
+
+function updateTaskStatus(taskWonum, newStatus, button) {
+    // Show loading state
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Updating...';
+    button.disabled = true;
+
+    // Make API call
+    fetch(`/api/task/${taskWonum}/status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            status: newStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the status badge
+            const statusBadge = button.closest('.task-header').querySelector('.status-badge');
+            statusBadge.className = `status-badge status-${newStatus}`;
+            statusBadge.textContent = newStatus;
+
+            // Reset dropdown
+            const dropdown = document.querySelector(`select[data-task-wonum="${taskWonum}"]`);
+            dropdown.value = '';
+
+            // Show success message
+            showNotification('success', data.message);
+        } else {
+            showNotification('error', data.error || 'Failed to update task status');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('error', 'Network error occurred while updating task status');
+    })
+    .finally(() => {
+        // Restore button state
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+function loadPlannedMaterials(taskWonum, taskStatus, button) {
+    // Show loading state
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Loading...';
+    button.disabled = true;
+
+    const materialsContent = document.getElementById(`materials-content-${taskWonum}`);
+
+    // Show loading in content area
+    materialsContent.innerHTML = `
+        <div class="materials-loading">
+            <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+            <div>Loading planned materials...</div>
+        </div>
+    `;
+
+    // Make API call
+    fetch(`/api/task/${taskWonum}/planned-materials?status=${taskStatus}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.show_materials) {
+            if (data.materials && data.materials.length > 0) {
+                // Display materials with comprehensive data
+                const materialsHtml = generateMaterialsDisplay(data.materials);
+                materialsContent.innerHTML = materialsHtml;
+
+                // Update button to show refresh option
+                button.innerHTML = '<i class="fas fa-sync-alt me-1"></i>Refresh';
+                button.disabled = false;
+
+                showNotification('success', `Loaded ${data.materials.length} planned materials for task ${taskWonum}`);
+            } else {
+                // No materials found
+                materialsContent.innerHTML = `
+                    <div class="materials-empty">
+                        <i class="fas fa-box-open fa-2x mb-2"></i>
+                        <div>No planned materials found for this task</div>
+                    </div>
+                `;
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        } else {
+            // Materials not available for this status
+            materialsContent.innerHTML = `
+                <div class="materials-empty">
+                    <i class="fas fa-info-circle fa-2x mb-2"></i>
+                    <div>${data.message || 'Planned materials not available for this task status'}</div>
+                </div>
+            `;
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error loading planned materials:', error);
+        materialsContent.innerHTML = `
+            <div class="materials-error">
+                <i class="fas fa-exclamation-triangle me-1"></i>
+                Error loading planned materials: ${error.message || 'Unknown error'}
+            </div>
+        `;
+        button.innerHTML = originalText;
+        button.disabled = false;
+        showNotification('error', 'Failed to load planned materials');
+    });
+}
+function loadTaskLabor(taskWonum, taskStatus, button) {
+    // Show loading state
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Loading...';
+    button.disabled = true;
+
+    const laborContent = document.getElementById(`labor-content-${taskWonum}`);
+
+    // Show loading in content area
+    laborContent.innerHTML = `
+        <div class="labor-loading">
+            <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+            <div>Loading labor assignments...</div>
+        </div>
+    `;
+
+    // Make API call to get labor data
+    fetch(`/api/task/${taskWonum}/labor?status=${taskStatus}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(`👷 LABOR LOAD: Response for task ${taskWonum}:`, data);
+
+        if (data.success && data.show_labor) {
+            if (data.labor && data.labor.length > 0) {
+                // Display labor with comprehensive data
+                const laborHtml = generateLaborDisplay(data.labor);
+                laborContent.innerHTML = laborHtml;
+
+                // Update button to show refresh option
+                button.innerHTML = '<i class="fas fa-sync-alt me-1"></i>Refresh';
+                button.disabled = false;
+
+                showNotification('success', `Loaded ${data.labor.length} labor assignments for task ${taskWonum}`);
+                console.log(`✅ LABOR LOAD: Successfully loaded ${data.labor.length} labor records for task ${taskWonum}`);
+            } else {
+                // No labor found
+                laborContent.innerHTML = `
+                    <div class="labor-empty">
+                        <i class="fas fa-users fa-2x mb-2"></i>
+                        <div>No labor assignments found for this task</div>
+                        <small class="text-muted">Task ${taskWonum} has no labor records</small>
+                    </div>
+                `;
+                button.innerHTML = originalText;
+                button.disabled = false;
+                console.log(`ℹ️ LABOR LOAD: No labor records found for task ${taskWonum}`);
+            }
+        } else {
+            // Labor not available or error occurred
+            laborContent.innerHTML = `
+                <div class="labor-empty">
+                    <i class="fas fa-info-circle fa-2x mb-2"></i>
+                    <div>${data.message || 'Labor assignments not available for this task'}</div>
+                    <small class="text-muted">Error: ${data.error || 'Unknown error'}</small>
+                </div>
+            `;
+            button.innerHTML = originalText;
+            button.disabled = false;
+            console.log(`❌ LABOR LOAD: Failed to load labor for task ${taskWonum}:`, data.error);
+        }
+    })
+    .catch(error => {
+        console.error(`❌ LABOR LOAD: Network error loading labor for task ${taskWonum}:`, error);
+        laborContent.innerHTML = `
+            <div class="labor-error">
+                <i class="fas fa-exclamation-triangle me-1"></i>
+                Error loading labor assignments: ${error.message || 'Network error'}
+            </div>
+        `;
+        button.innerHTML = originalText;
+        button.disabled = false;
+        showNotification('error', 'Failed to load labor assignments');
+    });
+}
+
+// Function to generate comprehensive labor display
+function generateLaborDisplay(laborRecords) {
+    // Desktop table view
+    let desktopHtml = `
+        <div class="labor-desktop-view d-none d-lg-block">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Labor Code</th>
+                        <th>Hours</th>
+                        <th>Craft</th>
+                        <th>Start Date</th>
+                        <th>Finish Date</th>
+                        <th>Regular Hrs</th>
+                        <th>Premium Hrs</th>
+                        <th>Transaction Type</th>
+                        <th>Trans ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    laborRecords.forEach(labor => {
+        desktopHtml += `
+            <tr>
+                <td class="labor-code"><strong>${labor.laborcode || 'N/A'}</strong></td>
+                <td class="labor-hours">${labor.laborhrs || 0} hrs</td>
+                <td class="labor-craft">${labor.craft || 'N/A'}</td>
+                <td class="labor-start">${formatDateTime(labor.startdate)}</td>
+                <td class="labor-finish">${formatDateTime(labor.finishdate)}</td>
+                <td class="labor-regular">${labor.regularhrs || 0} hrs</td>
+                <td class="labor-premium">${labor.premiumpayhours || 0} hrs</td>
+                <td class="labor-transtype">${labor.transtype || 'N/A'}</td>
+                <td class="labor-transid">${labor.labtransid || 'N/A'}</td>
+            </tr>
+        `;
+    });
+
+    desktopHtml += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    // Mobile card view
+    let mobileHtml = `<div class="labor-mobile-view d-lg-none">`;
+
+    laborRecords.forEach(labor => {
+        mobileHtml += `
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title mb-0">${labor.laborcode || 'N/A'}</h6>
+                        <span class="badge bg-primary">${labor.laborhrs || 0} hrs</span>
+                    </div>
+                    <div class="row text-muted small mb-2">
+                        <div class="col-6"><strong>Craft:</strong> ${labor.craft || 'N/A'}</div>
+                        <div class="col-6"><strong>Trans ID:</strong> ${labor.labtransid || 'N/A'}</div>
+                    </div>
+                    <div class="row text-muted small mb-2">
+                        <div class="col-6"><strong>Regular:</strong> ${labor.regularhrs || 0} hrs</div>
+                        <div class="col-6"><strong>Premium:</strong> ${labor.premiumpayhours || 0} hrs</div>
+                    </div>
+                    <div class="row text-muted small mb-2">
+                        <div class="col-6"><strong>Trans Type:</strong> ${labor.transtype || 'N/A'}</div>
+                        <div class="col-6"><strong>Trans ID:</strong> ${labor.labtransid || 'N/A'}</div>
+                    </div>
+                    <div class="row text-muted small">
+                        <div class="col-12"><strong>Start:</strong> ${formatDateTime(labor.startdate)}</div>
+                        <div class="col-12"><strong>Finish:</strong> ${formatDateTime(labor.finishdate)}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    mobileHtml += `</div>`;
+
+    return desktopHtml + mobileHtml;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function showNotification(type, message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    let alertClass = 'alert-danger'; // default to error
+    if (type === 'success') alertClass = 'alert-success';
+    else if (type === 'info') alertClass = 'alert-info';
+    else if (type === 'warning') alertClass = 'alert-warning';
+
+    notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    // Add to page
+    document.body.appendChild(notification);
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Global function to refresh materials after material addition
+function refreshMaterials() {
+    console.log('🔄 Refreshing materials after material addition...');
+
+    // Clear materials cache first
+    fetch('/api/task/planned-materials/cache/clear', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('✅ Materials cache cleared successfully');
+
+            // Refresh all loaded materials sections
+            const loadedMaterialsButtons = document.querySelectorAll('.load-materials-btn');
+            loadedMaterialsButtons.forEach(button => {
+                const taskWonum = button.getAttribute('data-task-wonum');
+                const taskStatus = button.getAttribute('data-task-status');
+                const materialsContent = document.getElementById(`materials-content-${taskWonum}`);
+
+                // Only refresh if materials were already loaded (not showing the initial load button)
+                if (materialsContent && !materialsContent.querySelector('.materials-loading') &&
+                    materialsContent.innerHTML.trim() !== '' &&
+                    !materialsContent.innerHTML.includes('Load Materials')) {
+
+                    console.log(`🔄 Refreshing materials for task ${taskWonum}`);
+                    loadPlannedMaterials(taskWonum, taskStatus, button);
+                }
+            });
+
+            showNotification('success', 'Materials refreshed successfully');
+        } else {
+            console.error('❌ Failed to clear materials cache:', data.error);
+            showNotification('error', 'Failed to refresh materials cache');
+        }
+    })
+    .catch(error => {
+        console.error('❌ Error clearing materials cache:', error);
+        showNotification('error', 'Network error while refreshing materials');
+    });
+}
+</script>
+
+<!-- Include Inventory Search Modal -->
+{% include 'components/inventory_search_modal.html' %}
+
+<!-- Include Labor Search Modal -->
+{% include 'components/labor_search_modal.html' %}
+
+<!-- Include Inventory Search JavaScript -->
+<script src="{{ url_for('static', filename='js/inventory_search.js') }}"></script>
+
+<!-- Include Labor Search JavaScript -->
+<script src="{{ url_for('static', filename='js/labor_search.js') }}"></script>
+
+{% endblock %}

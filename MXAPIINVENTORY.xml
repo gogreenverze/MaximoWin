@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<max:CreateMXAPIINVENTORY xmlns:max="http://www.ibm.com/maximo" maximoVersion="string" messageID="string" baseLanguage="string" transLanguage="string" creationDateTime="2008-09-29T01:49:45">
+  <max:MXAPIINVENTORYSet>
+    <max:INVENTORY deleteForInsert="string" action="Delete" transLanguage="string" relationship="string">
+      <max:MAXINTERRORMSG>string</max:MAXINTERRORMSG>
+      <max:ABCTYPE changed="true">string</max:ABCTYPE>
+      <max:ADMIMTIME changed="true">10</max:ADMIMTIME>
+      <max:ASL changed="true">false</max:ASL>
+      <max:AUTOCALCROP changed="false">false</max:AUTOCALCROP>
+      <max:AVBLBALANCE changed="true">1.051732E7</max:AVBLBALANCE>
+      <max:BENCHSTOCK changed="true">false</max:BENCHSTOCK>
+      <max:BINCNT changed="true">string</max:BINCNT>
+      <max:BINNUM changed="false">string</max:BINNUM>
+      <max:CATALOGCODE changed="false">string</max:CATALOGCODE>
+      <max:CCF changed="false">10</max:CCF>
+      <max:CONDITIONCODE changed="false">string</max:CONDITIONCODE>
+      <max:CONSIGNMENT changed="false">true</max:CONSIGNMENT>
+      <max:CONSVENDOR changed="true">string</max:CONSVENDOR>
+      <max:CONTROLACC changed="false">
+        <max:VALUE>string</max:VALUE>
+        <max:GLCOMP glorder="3">string</max:GLCOMP>
+      </max:CONTROLACC>
+      <max:COSTTYPE changed="true">string</max:COSTTYPE>
+      <max:CURBAL changed="true">1.051732E7</max:CURBAL>
+      <max:CURBALTOTAL changed="true">1.051732E7</max:CURBALTOTAL>
+      <max:DELIVERYTIME changed="true">10</max:DELIVERYTIME>
+      <max:DFLTSTAGEBIN changed="false">string</max:DFLTSTAGEBIN>
+      <max:EXPIREDQTY changed="false">1.051732E7</max:EXPIREDQTY>
+      <max:EXTERNALREFID changed="true">string</max:EXTERNALREFID>
+      <max:FREQUENCY changed="false">10</max:FREQUENCY>
+      <max:FREQUNIT maxvalue="string" changed="false">string</max:FREQUNIT>
+      <max:GLACCOUNT changed="false">
+        <max:VALUE>string</max:VALUE>
+        <max:GLCOMP glorder="3">string</max:GLCOMP>
+      </max:GLACCOUNT>
+      <max:HARDRESISSUE changed="false">true</max:HARDRESISSUE>
+      <max:HASCHILDINVBALANCE changed="true">false</max:HASCHILDINVBALANCE>
+      <max:ICG changed="true">string</max:ICG>
+      <max:INTERNAL changed="false">true</max:INTERNAL>
+      <max:INVCOSTADJACC changed="false">
+        <max:VALUE>string</max:VALUE>
+        <max:GLCOMP glorder="3">string</max:GLCOMP>
+      </max:INVCOSTADJACC>
+      <max:INVENTORYID changed="false">10</max:INVENTORYID>
+      <max:INVGENTYPE maxvalue="string" changed="true">string</max:INVGENTYPE>
+      <max:INVMTOL changed="false">1.051732E7</max:INVMTOL>
+      <max:INVPTOL changed="true">1.051732E7</max:INVPTOL>
+      <max:INVRESERVEQTY changed="true">1.051732E7</max:INVRESERVEQTY>
+      <max:ISSUE1YRAGO changed="false">1.051732E7</max:ISSUE1YRAGO>
+      <max:ISSUE2YRAGO changed="false">1.051732E7</max:ISSUE2YRAGO>
+      <max:ISSUE3YRAGO changed="true">1.051732E7</max:ISSUE3YRAGO>
+      <max:ISSUEUNIT changed="false">string</max:ISSUEUNIT>
+      <max:ISSUEYTD changed="false">1.051732E7</max:ISSUEYTD>
+      <max:ITEMNUM changed="true">string</max:ITEMNUM>
+      <max:ITEMSETID changed="true">string</max:ITEMSETID>
+      <max:ITEMTYPE changed="true">string</max:ITEMTYPE>
+      <max:LASTISSUEDATE changed="true">2005-01-21T23:35:36+00:00</max:LASTISSUEDATE>
+      <max:LOCATION changed="false">string</max:LOCATION>
+      <max:LOTCNT changed="true">string</max:LOTCNT>
+      <max:LOTNUM changed="true">string</max:LOTNUM>
+      <max:MANUFACTURER changed="false">string</max:MANUFACTURER>
+      <max:MAXLEVEL changed="true">1.051732E7</max:MAXLEVEL>
+      <max:MINLEVEL changed="true">1.051732E7</max:MINLEVEL>
+      <max:MODELNUM changed="true">string</max:MODELNUM>
+      <max:NEWCOSTTYPE changed="true">string</max:NEWCOSTTYPE>
+      <max:NEXTINVOICEDATE changed="false">2014-12-08T18:05:08</max:NEXTINVOICEDATE>
+      <max:NP_STATUSMEMO changed="true">string</max:NP_STATUSMEMO>
+      <max:OPSTIME changed="false">10</max:OPSTIME>
+      <max:ORDERQTY changed="true">1.051732E7</max:ORDERQTY>
+      <max:ORDERUNIT changed="false">string</max:ORDERUNIT>
+      <max:ORGID changed="true">string</max:ORGID>
+      <max:OWNERSYSID changed="true">string</max:OWNERSYSID>
+      <max:RECEIPTTOLERANCE changed="true">1.051732E7</max:RECEIPTTOLERANCE>
+      <max:REORDER changed="true">false</max:REORDER>
+      <max:RESERVEDQTY changed="true">1.051732E7</max:RESERVEDQTY>
+      <max:SAFELEVEL changed="true">1.051732E7</max:SAFELEVEL>
+      <max:SENDERSYSID changed="true">string</max:SENDERSYSID>
+      <max:SHIPPEDQTY changed="false">1.051732E7</max:SHIPPEDQTY>
+      <max:SHRINKAGEACC changed="true">
+        <max:VALUE>string</max:VALUE>
+        <max:GLCOMP glorder="3">string</max:GLCOMP>
+      </max:SHRINKAGEACC>
+      <max:SITEID changed="false">string</max:SITEID>
+      <max:SOURCESYSID changed="false">string</max:SOURCESYSID>
+      <max:SSTOCK changed="true">1.051732E7</max:SSTOCK>
+      <max:STAGEDQTY changed="true">1.051732E7</max:STAGEDQTY>
+      <max:STATUS changed="true">string</max:STATUS>
+      <max:STATUSDATE changed="false">2017-08-26T04:13:30</max:STATUSDATE>
+      <max:STATUSIFACE changed="true">false</max:STATUSIFACE>
+      <max:STORELOC changed="false">string</max:STORELOC>
+      <max:STORELOCSITEID changed="false">string</max:STORELOCSITEID>
+      <max:VECATC changed="false">false</max:VECATC>
+      <max:VECCRITICAL changed="true">true</max:VECCRITICAL>
+      <max:VENDOR changed="true">string</max:VENDOR>
+      <max:INVBALANCES deleteForInsert="string" action="Replace" relationship="string">
+        <max:BINNUM changed="true">string</max:BINNUM>
+        <max:CONDITIONCODE changed="false">string</max:CONDITIONCODE>
+        <max:CURBAL changed="true">1.051732E7</max:CURBAL>
+        <max:EXPIREDQTY changed="true">1.051732E7</max:EXPIREDQTY>
+        <max:EXTERNALREFID changed="true">string</max:EXTERNALREFID>
+        <max:INVBALANCESID changed="true">10</max:INVBALANCESID>
+        <max:LOTNUM changed="false">string</max:LOTNUM>
+        <max:NEWCURBAL changed="true">1.051732E7</max:NEWCURBAL>
+        <max:NEXTPHYCNTDATE changed="false">2011-05-05T11:49:40</max:NEXTPHYCNTDATE>
+        <max:ORGID changed="false">string</max:ORGID>
+        <max:OWNERSYSID changed="true">string</max:OWNERSYSID>
+        <max:PHYSCNT changed="false">1.051732E7</max:PHYSCNT>
+        <max:PHYSCNTDATE changed="true">2009-06-10T02:04:10</max:PHYSCNTDATE>
+        <max:PICKEDQTY changed="true">1.051732E7</max:PICKEDQTY>
+        <max:PRE_CALCCURBAL changed="true">1.051732E7</max:PRE_CALCCURBAL>
+        <max:PRE_CURBAL changed="false">1.051732E7</max:PRE_CURBAL>
+        <max:PRE_CURBALCHANGE changed="false">1.051732E7</max:PRE_CURBALCHANGE>
+        <max:PRE_DATE changed="true">2019-07-03T22:40:21</max:PRE_DATE>
+        <max:RECONCILED changed="true">true</max:RECONCILED>
+        <max:SENDERSYSID changed="true">string</max:SENDERSYSID>
+        <max:SOURCESYSID changed="false">string</max:SOURCESYSID>
+        <max:STAGEDCURBAL changed="false">1.051732E7</max:STAGEDCURBAL>
+        <max:STAGINGBIN changed="false">true</max:STAGINGBIN>
+      </max:INVBALANCES>
+      <max:INVCOST deleteForInsert="string" action="AddChange" relationship="string">
+        <max:AVGCOST changed="false">1.051732E7</max:AVGCOST>
+        <max:CONDITIONCODE changed="false">string</max:CONDITIONCODE>
+        <max:CONDRATE changed="false">10</max:CONDRATE>
+        <max:CONTROLACC changed="false">
+          <max:VALUE>string</max:VALUE>
+          <max:GLCOMP glorder="3">string</max:GLCOMP>
+        </max:CONTROLACC>
+        <max:GLACCOUNT changed="true">
+          <max:VALUE>string</max:VALUE>
+          <max:GLCOMP glorder="3">string</max:GLCOMP>
+        </max:GLACCOUNT>
+        <max:INVCOSTADJACC changed="true">
+          <max:VALUE>string</max:VALUE>
+          <max:GLCOMP glorder="3">string</max:GLCOMP>
+        </max:INVCOSTADJACC>
+        <max:INVCOSTID changed="true">10</max:INVCOSTID>
+        <max:LASTCOST changed="true">1.051732E7</max:LASTCOST>
+        <max:NEWAVGCOST changed="false">1.051732E7</max:NEWAVGCOST>
+        <max:NEWSTDCOST changed="false">1.051732E7</max:NEWSTDCOST>
+        <max:ORGID changed="true">string</max:ORGID>
+        <max:SHRINKAGEACC changed="true">
+          <max:VALUE>string</max:VALUE>
+          <max:GLCOMP glorder="3">string</max:GLCOMP>
+        </max:SHRINKAGEACC>
+        <max:STDCOST changed="false">1.051732E7</max:STDCOST>
+      </max:INVCOST>
+      <max:TRANSFERCURITEM deleteForInsert="string" action="AddChange" relationship="string">
+        <max:CONDITIONCODE changed="false">string</max:CONDITIONCODE>
+        <max:CONVERSION changed="false">1.051732E7</max:CONVERSION>
+        <max:FROMAVBLBALANCE changed="false">1.051732E7</max:FROMAVBLBALANCE>
+        <max:FROMBIN changed="false">string</max:FROMBIN>
+        <max:FROMCONDITIONCODE changed="true">string</max:FROMCONDITIONCODE>
+        <max:FROMCURBAL changed="true">1.051732E7</max:FROMCURBAL>
+        <max:FROMLOT changed="true">string</max:FROMLOT>
+        <max:FROMSTORELOC changed="false">string</max:FROMSTORELOC>
+        <max:GLCREDITACCT changed="true">
+          <max:VALUE>string</max:VALUE>
+          <max:GLCOMP glorder="3">string</max:GLCOMP>
+        </max:GLCREDITACCT>
+        <max:GLDEBITACCT changed="true">
+          <max:VALUE>string</max:VALUE>
+          <max:GLCOMP glorder="3">string</max:GLCOMP>
+        </max:GLDEBITACCT>
+        <max:ISLOT changed="false">false</max:ISLOT>
+        <max:LINECOST changed="true">1.051732E7</max:LINECOST>
+        <max:MEMO changed="true">string</max:MEMO>
+        <max:ORGID changed="false">string</max:ORGID>
+        <max:QUANTITY changed="false">1.051732E7</max:QUANTITY>
+        <max:TOBIN changed="true">string</max:TOBIN>
+        <max:TOLOT changed="false">string</max:TOLOT>
+        <max:TOSITEID changed="false">string</max:TOSITEID>
+        <max:TOSTORELOC changed="false">string</max:TOSTORELOC>
+        <max:UNITCOST changed="true">1.051732E7</max:UNITCOST>
+      </max:TRANSFERCURITEM>
+      <max:MATRECTRANS deleteForInsert="string" action="Replace" relationship="string">
+        <max:ACTUALCOST changed="true">1.051732E7</max:ACTUALCOST>
+        <max:ACTUALDATE changed="false">2010-06-25T02:52:50+00:00</max:ACTUALDATE>
+        <max:ADVANCEPMT changed="false">1.051732E7</max:ADVANCEPMT>
+        <max:ASSETNUM changed="false">string</max:ASSETNUM>
+        <max:BELONGSTO changed="false">10</max:BELONGSTO>
+        <max:COMMODITY changed="false">string</max:COMMODITY>
+        <max:COMMODITYGROUP changed="true">string</max:COMMODITYGROUP>
+        <max:CONDITIONCODE changed="false">string</max:CONDITIONCODE>
+        <max:CONDRATE changed="false">10</max:CONDRATE>
+        <max:CONSIGNMENT changed="false">true</max:CONSIGNMENT>
+        <max:CONSINVOICENUM changed="true">string</max:CONSINVOICENUM>
+        <max:CONSVENDOR changed="true">string</max:CONSVENDOR>
+        <max:CONVERSION changed="true">1.051732E7</max:CONVERSION>
+        <max:COSTINFO changed="false">false</max:COSTINFO>
+        <max:COSTOVERRECEIVED changed="true">1.051732E7</max:COSTOVERRECEIVED>
+        <max:COURIER changed="true">string</max:COURIER>
+        <max:CURBAL changed="false">1.051732E7</max:CURBAL>
+        <max:CURRENCYCODE changed="false">string</max:CURRENCYCODE>
+        <max:CURRENCYLINECOST changed="true">1.051732E7</max:CURRENCYLINECOST>
+        <max:CURRENCYUNITCOST changed="true">1.051732E7</max:CURRENCYUNITCOST>
+        <max:DESCRIPTION changed="true">string</max:DESCRIPTION>
+        <max:ENTERBY changed="true">string</max:ENTERBY>
+        <max:ENTERBYEMAIL changed="false">string</max:ENTERBYEMAIL>
+        <max:ENTEREDASTASK changed="false">true</max:ENTEREDASTASK>
+        <max:EXCHANGERATE changed="true">1.051732E7</max:EXCHANGERATE>
+        <max:EXCHANGERATE2 changed="false">1.051732E7</max:EXCHANGERATE2>
+        <max:EXTERNALREFID changed="true">string</max:EXTERNALREFID>
+        <max:FINANCIALPERIOD changed="false">string</max:FINANCIALPERIOD>
+        <max:FINCNTRLID changed="true">string</max:FINCNTRLID>
+        <max:FROMBIN changed="true">string</max:FROMBIN>
+        <max:FROMCONDITIONCODE changed="false">string</max:FROMCONDITIONCODE>
+        <max:FROMLOT changed="false">string</max:FROMLOT>
+        <max:FROMSITEID changed="true">string</max:FROMSITEID>
+        <max:FROMSTORELOC changed="true">string</max:FROMSTORELOC>
+        <max:GLCREDITACCT changed="true">
+          <max:VALUE>string</max:VALUE>
+          <max:GLCOMP glorder="3">string</max:GLCOMP>
+        </max:GLCREDITACCT>
+        <max:GLDEBITACCT changed="false">
+          <max:VALUE>string</max:VALUE>
+          <max:GLCOMP glorder="3">string</max:GLCOMP>
+        </max:GLDEBITACCT>
+        <max:IFSCNF changed="false">false</max:IFSCNF>
+        <max:IFSRESPONSE changed="false">string</max:IFSRESPONSE>
+        <max:INSPECTEDQTY changed="true">1.051732E7</max:INSPECTEDQTY>
+        <max:INVOICENUM changed="false">string</max:INVOICENUM>
+        <max:INVPICKLISTID changed="true">10</max:INVPICKLISTID>
+        <max:INVUSEID changed="false">10</max:INVUSEID>
+        <max:INVUSELINEID changed="true">10</max:INVUSELINEID>
+        <max:INVUSELINENUM changed="false">10</max:INVUSELINENUM>
+        <max:INVUSELINESPLITID changed="false">10</max:INVUSELINESPLITID>
+        <max:ISSUE changed="false">false</max:ISSUE>
+        <max:ISSUETO changed="false">string</max:ISSUETO>
+        <max:ISSUETYPE maxvalue="string" changed="true">string</max:ISSUETYPE>
+        <max:IT1 changed="true">string</max:IT1>
+        <max:IT10 changed="true">string</max:IT10>
+        <max:IT2 changed="true">string</max:IT2>
+        <max:IT3 changed="false">string</max:IT3>
+        <max:IT4 changed="true">1.051732E7</max:IT4>
+        <max:IT5 changed="false">string</max:IT5>
+        <max:IT6 changed="true">string</max:IT6>
+        <max:IT7 changed="true">string</max:IT7>
+        <max:IT8 changed="false">string</max:IT8>
+        <max:IT9 changed="false">string</max:IT9>
+        <max:ITEMNUM changed="true">string</max:ITEMNUM>
+        <max:ITEMSETID changed="true">string</max:ITEMSETID>
+        <max:ITIN1 changed="false">string</max:ITIN1>
+        <max:ITIN2 changed="false">string</max:ITIN2>
+        <max:ITIN3 changed="false">string</max:ITIN3>
+        <max:ITIN4 changed="true">string</max:ITIN4>
+        <max:ITIN5 changed="false">string</max:ITIN5>
+        <max:ITIN6 changed="false">string</max:ITIN6>
+        <max:ITIN7 changed="false">string</max:ITIN7>
+        <max:LINECOST changed="false">1.051732E7</max:LINECOST>
+        <max:LINECOST2 changed="false">1.051732E7</max:LINECOST2>
+        <max:LINETYPE changed="false">string</max:LINETYPE>
+        <max:LOADEDCOST changed="true">1.051732E7</max:LOADEDCOST>
+        <max:LOCATION changed="false">string</max:LOCATION>
+        <max:MANUFACTURER changed="false">string</max:MANUFACTURER>
+        <max:MATRECTRANSID changed="true">10</max:MATRECTRANSID>
+        <max:MATUSETRANSID changed="false">10</max:MATUSETRANSID>
+        <max:MODELNUM changed="true">string</max:MODELNUM>
+        <max:MRLINENUM changed="false">10</max:MRLINENUM>
+        <max:MRNUM changed="false">string</max:MRNUM>
+        <max:NEWSITE changed="false">string</max:NEWSITE>
+        <max:OLDAVGCOST changed="true">1.051732E7</max:OLDAVGCOST>
+        <max:ORGID changed="false">string</max:ORGID>
+        <max:ORGRCVEXTERNALREFID changed="false">string</max:ORGRCVEXTERNALREFID>
+        <max:OUTSIDE changed="true">true</max:OUTSIDE>
+        <max:OWNERSYSID changed="false">string</max:OWNERSYSID>
+        <max:PACKINGSLIPNUM changed="true">string</max:PACKINGSLIPNUM>
+        <max:POLINENUM changed="false">10</max:POLINENUM>
+        <max:PONUM changed="true">string</max:PONUM>
+        <max:POREVISIONNUM changed="true">10</max:POREVISIONNUM>
+        <max:POSITEID changed="true">string</max:POSITEID>
+        <max:PRORATECOST changed="false">1.051732E7</max:PRORATECOST>
+        <max:PRORATED changed="true">true</max:PRORATED>
+        <max:QTYHELD changed="true">1.051732E7</max:QTYHELD>
+        <max:QTYOVERRECEIVED changed="true">1.051732E7</max:QTYOVERRECEIVED>
+        <max:QTYREQUESTED changed="false">1.051732E7</max:QTYREQUESTED>
+        <max:QUANTITY changed="false">1.051732E7</max:QUANTITY>
+        <max:RECEIPTQUANTITY changed="false">1.051732E7</max:RECEIPTQUANTITY>
+        <max:RECEIPTREF changed="false">10</max:RECEIPTREF>
+        <max:RECEIVEDUNIT changed="false">string</max:RECEIVEDUNIT>
+        <max:REFWO changed="false">string</max:REFWO>
+        <max:REJECTCODE changed="false">string</max:REJECTCODE>
+        <max:REJECTQTY changed="false">1.051732E7</max:REJECTQTY>
+        <max:REMARK changed="false">string</max:REMARK>
+        <max:REQUESTEDBY changed="false">string</max:REQUESTEDBY>
+        <max:ROTASSETNUM changed="false">string</max:ROTASSETNUM>
+        <max:SENDERSYSID changed="true">string</max:SENDERSYSID>
+        <max:SHIPMENTLINENUM changed="true">string</max:SHIPMENTLINENUM>
+        <max:SHIPMENTNUM changed="false">string</max:SHIPMENTNUM>
+        <max:SITEID changed="false">string</max:SITEID>
+        <max:SOURCESYSID changed="false">string</max:SOURCESYSID>
+        <max:STAGELOC changed="true">string</max:STAGELOC>
+        <max:STATUS maxvalue="string" changed="false">string</max:STATUS>
+        <max:STATUSCHANGEBY changed="false">string</max:STATUSCHANGEBY>
+        <max:STATUSDATE changed="true">2009-11-25T17:06:16+00:00</max:STATUSDATE>
+        <max:TAX1 changed="false">1.051732E7</max:TAX1>
+        <max:TAX1CODE changed="true">string</max:TAX1CODE>
+        <max:TAX2 changed="true">1.051732E7</max:TAX2>
+        <max:TAX2CODE changed="false">string</max:TAX2CODE>
+        <max:TAX3 changed="true">1.051732E7</max:TAX3>
+        <max:TAX3CODE changed="true">string</max:TAX3CODE>
+        <max:TAX4 changed="true">1.051732E7</max:TAX4>
+        <max:TAX4CODE changed="true">string</max:TAX4CODE>
+        <max:TAX5 changed="false">1.051732E7</max:TAX5>
+        <max:TAX5CODE changed="true">string</max:TAX5CODE>
+        <max:TAX6 changed="true">1.051732E7</max:TAX6>
+        <max:TAX6CODE changed="false">string</max:TAX6CODE>
+        <max:TAX7 changed="false">1.051732E7</max:TAX7>
+        <max:TAX7CODE changed="false">string</max:TAX7CODE>
+        <max:TAX8 changed="true">1.051732E7</max:TAX8>
+        <max:TAX8CODE changed="true">string</max:TAX8CODE>
+        <max:TOBIN changed="false">string</max:TOBIN>
+        <max:TOLOT changed="false">string</max:TOLOT>
+        <max:TOSTORELOC changed="false">string</max:TOSTORELOC>
+        <max:TOTALCURBAL changed="true">1.051732E7</max:TOTALCURBAL>
+        <max:TRANSDATE changed="true">2018-07-12T22:01:56+00:00</max:TRANSDATE>
+        <max:UNITCOST changed="false">1.051732E7</max:UNITCOST>
+        <max:VECSTAGE changed="true">true</max:VECSTAGE>
+      </max:MATRECTRANS>
+      <max:MATUSETRANS deleteForInsert="string" action="AddChange" relationship="string">
+        <max:ACTUALCOST changed="true">1.051732E7</max:ACTUALCOST>
+        <max:ACTUALDATE changed="false">2002-03-30T07:50:49</max:ACTUALDATE>
+        <max:ANYWHEREREFID changed="false">10</max:ANYWHEREREFID>
+        <max:ASSETNUM changed="false">string</max:ASSETNUM>
+        <max:BINNUM changed="true">string</max:BINNUM>
+        <max:COMMODITY changed="false">string</max:COMMODITY>
+        <max:COMMODITYGROUP changed="false">string</max:COMMODITYGROUP>
+        <max:CONDITIONCODE changed="false">string</max:CONDITIONCODE>
+        <max:CONDRATE changed="true">10</max:CONDRATE>
+        <max:CONSIGNMENT changed="true">true</max:CONSIGNMENT>
+        <max:CONSINVOICENUM changed="true">string</max:CONSINVOICENUM>
+        <max:CONSVENDOR changed="true">string</max:CONSVENDOR>
+        <max:CONVERSION changed="true">1.051732E7</max:CONVERSION>
+        <max:CURBAL changed="true">1.051732E7</max:CURBAL>
+        <max:CURRENCYCODE changed="true">string</max:CURRENCYCODE>
+        <max:CURRENCYLINECOST changed="false">1.051732E7</max:CURRENCYLINECOST>
+        <max:CURRENCYUNITCOST changed="false">1.051732E7</max:CURRENCYUNITCOST>
+        <max:DESCRIPTION changed="false">string</max:DESCRIPTION>
+        <max:ENTERBY changed="true">string</max:ENTERBY>
+        <max:ENTEREDASTASK changed="false">true</max:ENTEREDASTASK>
+        <max:EXCHANGERATE changed="true">1.051732E7</max:EXCHANGERATE>
+        <max:EXCHANGERATE2 changed="false">1.051732E7</max:EXCHANGERATE2>
+        <max:EXTERNALREFID changed="false">string</max:EXTERNALREFID>
+        <max:FINANCIALPERIOD changed="false">string</max:FINANCIALPERIOD>
+        <max:FINCNTRLID changed="false">string</max:FINCNTRLID>
+        <max:GLCREDITACCT changed="false">
+          <max:VALUE>string</max:VALUE>
+          <max:GLCOMP glorder="3">string</max:GLCOMP>
+        </max:GLCREDITACCT>
+        <max:GLDEBITACCT changed="false">
+          <max:VALUE>string</max:VALUE>
+          <max:GLCOMP glorder="3">string</max:GLCOMP>
+        </max:GLDEBITACCT>
+        <max:HASLD changed="false">true</max:HASLD>
+        <max:INVPICKLISTID changed="true">10</max:INVPICKLISTID>
+        <max:INVUSEID changed="true">10</max:INVUSEID>
+        <max:INVUSELINEID changed="false">10</max:INVUSELINEID>
+        <max:INVUSELINESPLITID changed="true">10</max:INVUSELINESPLITID>
+        <max:ISSUEID changed="false">10</max:ISSUEID>
+        <max:ISSUETO changed="true">string</max:ISSUETO>
+        <max:ISSUETYPE changed="false">string</max:ISSUETYPE>
+        <max:ISSUEUNIT changed="false">string</max:ISSUEUNIT>
+        <max:IT1 changed="true">string</max:IT1>
+        <max:IT10 changed="false">string</max:IT10>
+        <max:IT2 changed="false">string</max:IT2>
+        <max:IT3 changed="false">string</max:IT3>
+        <max:IT4 changed="true">1.051732E7</max:IT4>
+        <max:IT5 changed="true">string</max:IT5>
+        <max:IT6 changed="true">string</max:IT6>
+        <max:IT7 changed="false">string</max:IT7>
+        <max:IT8 changed="true">string</max:IT8>
+        <max:IT9 changed="false">string</max:IT9>
+        <max:ITEMNUM changed="true">string</max:ITEMNUM>
+        <max:ITEMSETID changed="false">string</max:ITEMSETID>
+        <max:ITIN1 changed="true">string</max:ITIN1>
+        <max:ITIN2 changed="true">string</max:ITIN2>
+        <max:ITIN3 changed="false">string</max:ITIN3>
+        <max:ITIN4 changed="true">string</max:ITIN4>
+        <max:ITIN5 changed="false">string</max:ITIN5>
+        <max:ITIN6 changed="true">string</max:ITIN6>
+        <max:ITIN7 changed="true">string</max:ITIN7>
+        <max:LANGCODE changed="false">string</max:LANGCODE>
+        <max:LINECOST changed="true">1.051732E7</max:LINECOST>
+        <max:LINECOST2 changed="false">1.051732E7</max:LINECOST2>
+        <max:LINETYPE changed="true">string</max:LINETYPE>
+        <max:LOCATION changed="false">string</max:LOCATION>
+        <max:LOTNUM changed="true">string</max:LOTNUM>
+        <max:MATRECTRANSID changed="true">10</max:MATRECTRANSID>
+        <max:MATUSETRANSID changed="true">10</max:MATUSETRANSID>
+        <max:MEMO changed="true">string</max:MEMO>
+        <max:MRLINENUM changed="false">10</max:MRLINENUM>
+        <max:MRNUM changed="false">string</max:MRNUM>
+        <max:ORGID changed="true">string</max:ORGID>
+        <max:OUTSIDE changed="true">false</max:OUTSIDE>
+        <max:OWNERSYSID changed="true">string</max:OWNERSYSID>
+        <max:PACKINGSLIPNUM changed="false">string</max:PACKINGSLIPNUM>
+        <max:PHYSCNT changed="true">1.051732E7</max:PHYSCNT>
+        <max:PLUSPAGREEMENT changed="true">string</max:PLUSPAGREEMENT>
+        <max:PLUSPBILLPRICE changed="true">1.051732E7</max:PLUSPBILLPRICE>
+        <max:PLUSPCURRBILLPR changed="true">1.051732E7</max:PLUSPCURRBILLPR>
+        <max:PLUSPCURRLINEPR changed="false">1.051732E7</max:PLUSPCURRLINEPR>
+        <max:PLUSPCUSTCURCODE changed="true">string</max:PLUSPCUSTCURCODE>
+        <max:PLUSPCUSTCURDATE changed="false">2017-06-24T21:53:44</max:PLUSPCUSTCURDATE>
+        <max:PLUSPCUSTEXRATE changed="true">1.051732E7</max:PLUSPCUSTEXRATE>
+        <max:PLUSPCUSTOMER changed="false">string</max:PLUSPCUSTOMER>
+        <max:PLUSPCUSTPONUM changed="true">string</max:PLUSPCUSTPONUM>
+        <max:PLUSPCUSTPROVIDED changed="true">false</max:PLUSPCUSTPROVIDED>
+        <max:PLUSPGBTRANSID changed="true">10</max:PLUSPGBTRANSID>
+        <max:PLUSPGEOCODE changed="true">string</max:PLUSPGEOCODE>
+        <max:PLUSPLINEPRICE changed="true">1.051732E7</max:PLUSPLINEPRICE>
+        <max:PLUSPLISTPRICE changed="false">1.051732E7</max:PLUSPLISTPRICE>
+        <max:PLUSPMATPRICEAPPLIED changed="false">true</max:PLUSPMATPRICEAPPLIED>
+        <max:PLUSPPAYER changed="false">string</max:PLUSPPAYER>
+        <max:PLUSPPRICEADJ changed="true">true</max:PLUSPPRICEADJ>
+        <max:PLUSPPRICESCHED changed="false">string</max:PLUSPPRICESCHED>
+        <max:PLUSPREVGLACCT changed="false">
+          <max:VALUE>string</max:VALUE>
+          <max:GLCOMP glorder="3">string</max:GLCOMP>
+        </max:PLUSPREVGLACCT>
+        <max:PLUSPREVNUM changed="true">10</max:PLUSPREVNUM>
+        <max:PLUSPSALESTAX changed="true">1.051732E7</max:PLUSPSALESTAX>
+        <max:PLUSPTAX1AMT changed="true">1.051732E7</max:PLUSPTAX1AMT>
+        <max:PLUSPTAX1JURIS changed="false">string</max:PLUSPTAX1JURIS>
+        <max:PLUSPTAX2AMT changed="false">1.051732E7</max:PLUSPTAX2AMT>
+        <max:PLUSPTAX2JURIS changed="true">string</max:PLUSPTAX2JURIS>
+        <max:PLUSPTAX3AMT changed="true">1.051732E7</max:PLUSPTAX3AMT>
+        <max:PLUSPTAX3JURIS changed="true">string</max:PLUSPTAX3JURIS>
+        <max:PLUSPTAX4AMT changed="true">1.051732E7</max:PLUSPTAX4AMT>
+        <max:PLUSPTAX4JURIS changed="true">string</max:PLUSPTAX4JURIS>
+        <max:PLUSPTAX5AMT changed="true">1.051732E7</max:PLUSPTAX5AMT>
+        <max:PLUSPTAX5JURIS changed="true">string</max:PLUSPTAX5JURIS>
+        <max:PLUSPTAX6AMT changed="false">1.051732E7</max:PLUSPTAX6AMT>
+        <max:PLUSPTAX6JURIS changed="false">string</max:PLUSPTAX6JURIS>
+        <max:POLINENUM changed="false">10</max:POLINENUM>
+        <max:PONUM changed="true">string</max:PONUM>
+        <max:POREVISIONNUM changed="false">10</max:POREVISIONNUM>
+        <max:QTYREQUESTED changed="false">1.051732E7</max:QTYREQUESTED>
+        <max:QTYRETURNED changed="true">1.051732E7</max:QTYRETURNED>
+        <max:QUANTITY changed="true">1.051732E7</max:QUANTITY>
+        <max:REFWO changed="true">string</max:REFWO>
+        <max:ROLLUP changed="true">false</max:ROLLUP>
+        <max:ROTASSETNUM changed="false">string</max:ROTASSETNUM>
+        <max:SENDERSYSID changed="false">string</max:SENDERSYSID>
+        <max:SITEID changed="false">string</max:SITEID>
+        <max:SOURCESYSID changed="false">string</max:SOURCESYSID>
+        <max:SPAREPARTADDED changed="false">true</max:SPAREPARTADDED>
+        <max:STORELOC changed="true">string</max:STORELOC>
+        <max:TASKID changed="false">10</max:TASKID>
+        <max:TOSITEID changed="false">string</max:TOSITEID>
+        <max:TRANSDATE changed="false">2017-10-30T03:25:14</max:TRANSDATE>
+        <max:UNITCOST changed="true">1.051732E7</max:UNITCOST>
+        <max:WONUM changed="true">string</max:WONUM>
+        <max:WPITEMID changed="false">10</max:WPITEMID>
+      </max:MATUSETRANS>
+      <max:ITEMCONDITION deleteForInsert="string" action="Change" relationship="string">
+        <max:COMMODITY changed="true">string</max:COMMODITY>
+        <max:COMMODITYGROUP changed="false">string</max:COMMODITYGROUP>
+        <max:CONDITIONCODE changed="false">string</max:CONDITIONCODE>
+        <max:CONDRATE changed="false">1.051732E7</max:CONDRATE>
+        <max:DESCRIPTION changed="true">string</max:DESCRIPTION>
+        <max:HASLD changed="false">false</max:HASLD>
+        <max:ITEMCONDITIONID changed="true">10</max:ITEMCONDITIONID>
+        <max:LANGCODE changed="true">string</max:LANGCODE>
+        <max:STOCKTYPE changed="true">string</max:STOCKTYPE>
+      </max:ITEMCONDITION>
+    </max:INVENTORY>
+  </max:MXAPIINVENTORYSet>
+</max:CreateMXAPIINVENTORY>

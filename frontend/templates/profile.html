@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+
+{% block title %}User Profile - Maximo OAuth{% endblock %}
+
+{% block content %}
+<div class="welcome-header text-center mb-4">
+    <h2 class="fw-bold">
+        <i class="fas fa-user-circle me-2"></i>User Profile
+    </h2>
+    <div class="badge bg-warning text-dark mb-3">Test (UAT) Environment</div>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-id-card me-2"></i>Basic Information
+        </h5>
+    </div>
+    <div class="card-body p-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">First Name</label>
+                    <div class="form-control-plaintext">{{ user_profile.firstName }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Last Name</label>
+                    <div class="form-control-plaintext">{{ user_profile.lastName }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Display Name</label>
+                    <div class="form-control-plaintext">{{ user_profile.displayName }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Person ID</label>
+                    <div class="form-control-plaintext">{{ user_profile.personid }}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Username</label>
+                    <div class="form-control-plaintext">{{ user_profile.userName }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Login ID</label>
+                    <div class="form-control-plaintext">{{ user_profile.loginID }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Login Username</label>
+                    <div class="form-control-plaintext">{{ user_profile.loginUserName }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    <div class="form-control-plaintext">{{ user_profile.email }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-map-marker-alt me-2"></i>Location & Contact
+        </h5>
+    </div>
+    <div class="card-body p-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Country</label>
+                    <div class="form-control-plaintext">{{ user_profile.country }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">State/Province</label>
+                    <div class="form-control-plaintext">{{ user_profile.stateprovince }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Phone</label>
+                    <div class="form-control-plaintext">{{ user_profile.phone }}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Primary Phone</label>
+                    <div class="form-control-plaintext">{{ user_profile.primaryPhone }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Time Zone</label>
+                    <div class="form-control-plaintext">{{ user_profile.timezone }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">System Time Zone</label>
+                    <div class="form-control-plaintext">{{ user_profile.systimezone }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-cog me-2"></i>System Settings
+        </h5>
+    </div>
+    <div class="card-body p-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Base Language</label>
+                    <div class="form-control-plaintext">{{ user_profile.baseLang }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Base Currency</label>
+                    <div class="form-control-plaintext">{{ user_profile.baseCurrency }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Base Calendar</label>
+                    <div class="form-control-plaintext">{{ user_profile.baseCalendar }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Date Format</label>
+                    <div class="form-control-plaintext">{{ user_profile.dateformat }}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Can Use Inactive Sites</label>
+                    <div class="form-control-plaintext">{{ user_profile.canUseInactiveSites }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Default Storeroom</label>
+                    <div class="form-control-plaintext">{{ user_profile.defaultStoreroom }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Default Repair Site</label>
+                    <div class="form-control-plaintext">{{ user_profile.defaultRepairSite or 'None' }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Default Repair Facility</label>
+                    <div class="form-control-plaintext">{{ user_profile.defaultRepairFacility or 'None' }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-building me-2"></i>Organization & Site Settings
+        </h5>
+    </div>
+    <div class="card-body p-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Default Organization</label>
+                    <div class="form-control-plaintext">{{ user_profile.defaultOrg }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Default Site Description</label>
+                    <div class="form-control-plaintext">{{ user_profile.defaultSiteDescription }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Default Storeroom Site</label>
+                    <div class="form-control-plaintext">{{ user_profile.defaultStoreroomSite or 'None' }}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Insert Site</label>
+                    <form id="updateInsertSiteForm" class="d-flex align-items-center">
+                        <select id="insertSiteSelect" class="form-select me-2">
+                            {% set current_insert_site = user_profile.get("insertSite", "") %}
+                            {% if available_sites %}
+                                {% for site in available_sites %}
+                                <option value="{{ site.siteid }}" {% if site.siteid == current_insert_site %}selected{% endif %}>
+                                    {{ site.siteid }} - {{ site.description }}
+                                </option>
+                                {% endfor %}
+                            {% else %}
+                                <!-- If no sites available, at least show current site -->
+                                {% if current_insert_site %}
+                                <option value="{{ current_insert_site }}" selected>{{ current_insert_site }}</option>
+                                {% endif %}
+                            {% endif %}
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="fas fa-save me-1"></i>Update
+                        </button>
+                    </form>
+                    <div id="insertSiteUpdateStatus" class="mt-2"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Default Site</label>
+                    <form id="updateSiteForm" class="d-flex align-items-center">
+                        <select id="defaultSiteSelect" class="form-select me-2">
+                            {% set current_default_site = user_profile.get("defaultSite", "") %}
+                            {% if available_sites %}
+                                {% for site in available_sites %}
+                                <option value="{{ site.siteid }}" {% if site.siteid == current_default_site %}selected{% endif %}>
+                                    {{ site.siteid }} - {{ site.description }}
+                                </option>
+                                {% endfor %}
+                            {% else %}
+                                <!-- If no sites available, at least show current site -->
+                                {% if current_default_site %}
+                                <option value="{{ current_default_site }}" selected>{{ current_default_site }}</option>
+                                {% endif %}
+                            {% endif %}
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="fas fa-save me-1"></i>Update
+                        </button>
+                    </form>
+                    <div id="siteUpdateStatus" class="mt-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4 mb-5">
+    <a href="{{ url_for('welcome') }}" class="btn btn-outline-primary me-2">
+        <i class="fas fa-arrow-left me-2"></i>Back to Welcome
+    </a>
+    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
+        <i class="fas fa-sign-out-alt me-2"></i>Logout
+    </a>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Default Site Update
+        const updateSiteForm = document.getElementById('updateSiteForm');
+        const defaultSiteSelect = document.getElementById('defaultSiteSelect');
+        const siteUpdateStatus = document.getElementById('siteUpdateStatus');
+
+        updateSiteForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const siteId = defaultSiteSelect.value;
+            const formData = new FormData();
+            formData.append('site_id', siteId);
+            formData.append('site_type', 'default');
+
+            siteUpdateStatus.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"></div> Updating...';
+
+            fetch('{{ url_for("update_default_site") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    siteUpdateStatus.innerHTML = '<div class="alert alert-success py-1 px-2 mb-0">Default site updated successfully!</div>';
+                } else {
+                    siteUpdateStatus.innerHTML = `<div class="alert alert-danger py-1 px-2 mb-0">Error: ${data.message}</div>`;
+                }
+
+                setTimeout(() => {
+                    siteUpdateStatus.innerHTML = '';
+                }, 3000);
+            })
+            .catch(error => {
+                siteUpdateStatus.innerHTML = '<div class="alert alert-danger py-1 px-2 mb-0">Error updating default site</div>';
+                console.error('Error:', error);
+            });
+        });
+
+        // Insert Site Update
+        const updateInsertSiteForm = document.getElementById('updateInsertSiteForm');
+        const insertSiteSelect = document.getElementById('insertSiteSelect');
+        const insertSiteUpdateStatus = document.getElementById('insertSiteUpdateStatus');
+
+        updateInsertSiteForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const siteId = insertSiteSelect.value;
+            const formData = new FormData();
+            formData.append('site_id', siteId);
+            formData.append('site_type', 'insert');
+
+            insertSiteUpdateStatus.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"></div> Updating...';
+
+            fetch('{{ url_for("update_default_site") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    insertSiteUpdateStatus.innerHTML = '<div class="alert alert-success py-1 px-2 mb-0">Insert site updated successfully!</div>';
+                } else {
+                    insertSiteUpdateStatus.innerHTML = `<div class="alert alert-danger py-1 px-2 mb-0">Error: ${data.message}</div>`;
+                }
+
+                setTimeout(() => {
+                    insertSiteUpdateStatus.innerHTML = '';
+                }, 3000);
+            })
+            .catch(error => {
+                insertSiteUpdateStatus.innerHTML = '<div class="alert alert-danger py-1 px-2 mb-0">Error updating insert site</div>';
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
+{% endblock %}

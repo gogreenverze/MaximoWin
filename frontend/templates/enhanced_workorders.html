@@ -1,0 +1,896 @@
+{% extends 'base.html' %}
+
+{% block title %}Enhanced Work Orders - Maximo OAuth{% endblock %}
+
+{% block content %}
+
+<style>
+/* Materials Badge Styling */
+.materials-check-container {
+    min-width: 80px;
+    text-align: center;
+}
+
+.materials-check-btn {
+    border: 1px solid #198754; /* Green border */
+    background-color: #198754; /* Green background */
+    color: white; /* White text and icon color */
+    transition: all 0.2s ease;
+}
+
+.materials-check-btn:hover {
+    background-color: #6c757d; /* Grey background on hover */
+    border-color: #6c757d; /* Grey border on hover */
+    color: white; /* Keep text and icon color white */
+}
+
+.materials-check-btn i, .materials-check-btn span {
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.materials-badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: 0.375rem;
+    white-space: nowrap;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.materials-badge:hover {
+    transform: scale(1.05);
+}
+
+.materials-badge.bg-success {
+    background-color: #198754 !important;
+    color: white;
+    box-shadow: 0 2px 4px rgba(25, 135, 84, 0.3);
+}
+
+.materials-badge.bg-secondary {
+    background-color: #6c757d !important;
+    color: white;
+}
+
+.materials-badge.bg-danger {
+    background-color: #dc3545 !important;
+    color: white;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .materials-badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.375rem;
+    }
+
+    .materials-check-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Table responsive improvements */
+@media (max-width: 992px) {
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+
+    .btn-group .btn {
+        padding: 0.25rem 0.375rem;
+        font-size: 0.75rem;
+    }
+}
+</style>
+<div class="welcome-header text-center mb-4">
+    <h2 class="fw-bold">
+        <i class="fas fa-clipboard-list me-2 text-primary"></i>Enhanced Work Orders
+    </h2>
+    <div class="badge bg-warning text-dark mb-2">Test (UAT) Environment</div>
+    <div class="badge bg-primary text-white mb-3">
+        <i class="fas fa-tachometer-alt me-1"></i>Lightning Fast Search
+    </div>
+    {% if user_site_id %}
+    <div class="badge bg-info text-white mb-3">
+        <i class="fas fa-map-marker-alt me-1"></i>Site: {{ user_site_id }}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Search Filters Card -->
+<div class="card border-0 shadow-sm mb-4 border-start border-primary border-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-search me-2"></i>Search Work Orders
+        </h5>
+    </div>
+    <div class="card-body p-4">
+        <form id="searchForm">
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="siteFilter" class="form-label">Sites</label>
+                    <select class="form-select" id="siteFilter" name="site_ids" multiple>
+                        <option value="">Loading sites...</option>
+                    </select>
+                    <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple sites</small>
+                </div>
+                <div class="col-md-2">
+                    <label for="statusFilter" class="form-label">Status</label>
+                    <select class="form-select" id="statusFilter" name="status">
+                        <option value="">All Statuses</option>
+                        <option value="APPR">APPR - Approved</option>
+                        <option value="ASSIGN">ASSIGN - Assigned</option>
+                        <option value="READY">READY - Ready</option>
+                        <option value="INPRG">INPRG - In Progress</option>
+                        <option value="PACK">PACK - Packed</option>
+                        <option value="DEFER">DEFER - Deferred</option>
+                        <option value="WAPPR">WAPPR - Waiting Approval</option>
+                        <option value="WGOVT">WGOVT - Waiting Government</option>
+                        <option value="AWARD">AWARD - Awarded</option>
+                        <option value="MTLCXD">MTLCXD - Material Cancelled</option>
+                        <option value="MTLISD">MTLISD - Material Issued</option>
+                        <option value="PISSUE">PISSUE - Parts Issue</option>
+                        <option value="RTI">RTI - Ready to Issue</option>
+                        <option value="WMATL">WMATL - Waiting Material</option>
+                        <option value="WSERV">WSERV - Waiting Service</option>
+                        <option value="WSCH">WSCH - Waiting Schedule</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="priorityFilter" class="form-label">Priority</label>
+                    <select class="form-select" id="priorityFilter" name="priority">
+                        <option value="">All Priorities</option>
+                        <option value="1">1 - Critical</option>
+                        <option value="2">2 - High</option>
+                        <option value="3">3 - Medium</option>
+                        <option value="4">4 - Low</option>
+                        <option value="5">5 - Lowest</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="woclassFilter" class="form-label">Type</label>
+                    <select class="form-select" id="woclassFilter" name="woclass">
+                        <option value="WORKORDER">Work Orders</option>
+                        <option value="ACTIVITY">Activities</option>
+                        <option value="BOTH">Both</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="wonumFilter" class="form-label">Work Order #</label>
+                    <input type="text" class="form-control" id="wonumFilter" name="wonum"
+                           placeholder="e.g. 2021-1744762 or 1744762">
+                    <small class="form-text text-muted">Exact or partial match</small>
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-1"></i>Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <label for="descriptionFilter" class="form-label">Description</label>
+                    <input type="text" class="form-control" id="descriptionFilter" name="description"
+                           placeholder="Search in description...">
+                </div>
+            </div>
+        </form>
+
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Lazy Loading:</strong> Enter search criteria above to find work orders.
+                    Results are sorted by Report Date (ascending) and limited to 20 records per page for optimal performance.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Results Container -->
+<div id="searchResults" style="display: none;">
+    <!-- Performance Metrics Card -->
+    <div class="card border-0 shadow-sm mb-4 border-start border-success border-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-chart-line me-2"></i>Search Performance
+            </h5>
+        </div>
+        <div class="card-body p-4">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <div class="h4 text-primary mb-1" id="searchTime">-</div>
+                        <small class="text-muted">Search Time</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <div class="h4 text-success mb-1" id="resultCount">-</div>
+                        <small class="text-muted">Results Found</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <div class="h4 text-info mb-1" id="currentPage">-</div>
+                        <small class="text-muted">Current Page</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <div class="h4 text-warning mb-1" id="totalPages">-</div>
+                        <small class="text-muted">Total Pages</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Work Orders Results Table -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Search Results (<span id="workorderCount">0</span>)
+                </h5>
+                <div>
+                    <button class="btn btn-outline-light btn-sm me-2" id="selectAllBtn">
+                        <i class="fas fa-check-square me-1"></i>Select All
+                    </button>
+                    <button class="btn btn-outline-light btn-sm" id="clearSelectionBtn">
+                        <i class="fas fa-square me-1"></i>Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="workordersTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="50">
+                                <input type="checkbox" id="selectAllCheckbox" class="form-check-input">
+                            </th>
+                            <th>Work Order</th>
+                            <th>Site</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Materials</th>
+                            <th>Work Type</th>
+                            <th>Assigned To</th>
+                            <th>Location</th>
+                            <th>Asset</th>
+                            <th>Report Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="workordersTableBody">
+                        <!-- Dynamic content will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted">
+                        Showing <span id="showingFrom">0</span> to <span id="showingTo">0</span>
+                        of <span id="totalResults">0</span> results
+                    </span>
+                </div>
+                <nav aria-label="Work order pagination">
+                    <ul class="pagination mb-0" id="pagination">
+                        <!-- Dynamic pagination will be inserted here -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Initial Empty State -->
+<div id="emptyState" class="card border-0 shadow-sm mb-4">
+    <div class="card-body text-center p-5">
+        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">Ready to Search</h5>
+        <p class="text-muted">
+            Use the search filters above to find work orders.
+            Results will be displayed here with lightning-fast performance.
+        </p>
+        <div class="alert alert-light border">
+            <small>
+                <i class="fas fa-lightbulb text-warning me-1"></i>
+                <strong>Tip:</strong> Select one or more sites and add filters for best results.
+                You can search across multiple sites simultaneously. Use the Work Order # field for exact or partial number matching.
+                All searches exclude tasks and history records.
+            </small>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation -->
+<div class="text-center mt-4 mb-5">
+    <a href="{{ url_for('welcome') }}" class="btn btn-outline-primary me-2">
+        <i class="fas fa-arrow-left me-2"></i>Back to Welcome
+    </a>
+    <a href="{{ url_for('enhanced_profile') }}" class="btn btn-outline-success me-2">
+        <i class="fas fa-rocket me-2"></i>Enhanced Profile
+    </a>
+    <a href="/api-docs" class="btn btn-outline-info me-2">
+        <i class="fas fa-code me-2"></i>API Docs
+    </a>
+    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
+        <i class="fas fa-sign-out-alt me-2"></i>Logout
+    </a>
+</div>
+
+<script>
+let currentPage = 1;
+let currentSearchCriteria = {};
+let isSearching = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Load available sites first
+    loadAvailableSites();
+
+    // Initialize search form
+    const searchForm = document.getElementById('searchForm');
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        performSearch(1); // Start from page 1
+    });
+
+    // Initialize selection handlers
+    document.getElementById('selectAllBtn').addEventListener('click', selectAllWorkOrders);
+    document.getElementById('clearSelectionBtn').addEventListener('click', clearAllSelections);
+    document.getElementById('selectAllCheckbox').addEventListener('change', toggleAllWorkOrders);
+});
+
+async function loadAvailableSites() {
+    try {
+        const response = await fetch('/api/enhanced-workorders/available-sites');
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        if (result.success) {
+            populateSiteDropdown(result.sites, result.default_site);
+        } else {
+            console.error('Failed to load sites:', result.error);
+            showSiteLoadError();
+        }
+    } catch (error) {
+        console.error('Error loading available sites:', error);
+        showSiteLoadError();
+    }
+}
+
+function populateSiteDropdown(sites, defaultSite) {
+    const siteFilter = document.getElementById('siteFilter');
+
+    // Clear existing options
+    siteFilter.innerHTML = '';
+
+    if (sites.length === 0) {
+        siteFilter.innerHTML = '<option value="">No sites available</option>';
+        return;
+    }
+
+    // Add sites as options
+    sites.forEach(site => {
+        const option = document.createElement('option');
+        option.value = site.siteid;
+        option.textContent = `${site.siteid}${site.description !== site.siteid ? ' - ' + site.description : ''}`;
+
+        // Pre-select the user's default site
+        if (site.siteid === defaultSite) {
+            option.selected = true;
+        }
+
+        siteFilter.appendChild(option);
+    });
+
+    console.log(`✅ Loaded ${sites.length} available sites, default: ${defaultSite}`);
+}
+
+function showSiteLoadError() {
+    const siteFilter = document.getElementById('siteFilter');
+    siteFilter.innerHTML = '<option value="">Error loading sites</option>';
+}
+
+async function performSearch(page = 1) {
+    if (isSearching) return;
+
+    isSearching = true;
+    currentPage = page;
+
+    // Get search criteria from form
+    const formData = new FormData(document.getElementById('searchForm'));
+    currentSearchCriteria = {};
+
+    for (let [key, value] of formData.entries()) {
+        if (value.trim()) {
+            if (key === 'site_ids') {
+                // Handle multiple site selection
+                if (!currentSearchCriteria[key]) {
+                    currentSearchCriteria[key] = [];
+                }
+                currentSearchCriteria[key].push(value.trim());
+            } else {
+                currentSearchCriteria[key] = value.trim();
+            }
+        }
+    }
+
+    // Log selected sites for debugging
+    if (currentSearchCriteria.site_ids) {
+        console.log(`🏢 Selected sites: ${currentSearchCriteria.site_ids.join(', ')}`);
+    }
+
+    // Show loading state
+    showLoadingState();
+
+    try {
+        const startTime = Date.now();
+
+        const response = await fetch('/api/enhanced-workorders/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                search_criteria: currentSearchCriteria,
+                page: page,
+                page_size: 20
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        const searchTime = (Date.now() - startTime) / 1000;
+
+        displaySearchResults(result, searchTime);
+
+    } catch (error) {
+        console.error('Search error:', error);
+        showErrorState(error.message);
+    } finally {
+        isSearching = false;
+    }
+}
+
+function showLoadingState() {
+    // Hide empty state
+    document.getElementById('emptyState').style.display = 'none';
+
+    // Show search results container
+    const searchResults = document.getElementById('searchResults');
+    searchResults.style.display = 'block';
+
+    // Show loading in table
+    const tableBody = document.getElementById('workordersTableBody');
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="13" class="text-center p-4">
+                <div class="spinner-border text-primary me-2" role="status"></div>
+                Searching work orders...
+            </td>
+        </tr>
+    `;
+
+    // Update metrics with loading state
+    document.getElementById('searchTime').textContent = '...';
+    document.getElementById('resultCount').textContent = '...';
+    document.getElementById('currentPage').textContent = '...';
+    document.getElementById('totalPages').textContent = '...';
+    document.getElementById('workorderCount').textContent = '...';
+}
+
+function displaySearchResults(result, searchTime) {
+    // Update performance metrics
+    document.getElementById('searchTime').textContent = searchTime.toFixed(3) + 's';
+    document.getElementById('resultCount').textContent = result.workorders.length;
+    document.getElementById('currentPage').textContent = result.page;
+    document.getElementById('totalPages').textContent = result.total_pages;
+    document.getElementById('workorderCount').textContent = result.workorders.length;
+
+    // Update pagination info
+    const showingFrom = result.workorders.length > 0 ? ((result.page - 1) * result.page_size) + 1 : 0;
+    const showingTo = Math.min(result.page * result.page_size, result.total_count);
+    document.getElementById('showingFrom').textContent = showingFrom;
+    document.getElementById('showingTo').textContent = showingTo;
+    document.getElementById('totalResults').textContent = result.total_count;
+
+    // Populate table
+    populateWorkOrdersTable(result.workorders);
+
+    // Update pagination
+    updatePagination(result);
+
+    // Show results
+    document.getElementById('searchResults').style.display = 'block';
+    document.getElementById('emptyState').style.display = 'none';
+}
+
+function populateWorkOrdersTable(workorders) {
+    const tableBody = document.getElementById('workordersTableBody');
+
+    if (workorders.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="13" class="text-center p-4 text-muted">
+                    <i class="fas fa-search me-2"></i>No work orders found matching your search criteria.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tableBody.innerHTML = workorders.map(wo => `
+        <tr>
+            <td>
+                <input type="checkbox" class="form-check-input work-order-checkbox"
+                       value="${wo.wonum}" onchange="updateSelectedCount()">
+            </td>
+            <td>
+                <a href="/enhanced-workorder-details/${wo.wonum}" class="text-decoration-none">
+                    <strong class="text-primary">${wo.wonum}</strong>
+                </a>
+            </td>
+            <td>
+                <span class="badge bg-secondary">${wo.siteid || '-'}</span>
+            </td>
+            <td>
+                <div class="text-truncate" style="max-width: 200px;" title="${wo.description || ''}">
+                    ${wo.description || '-'}
+                </div>
+            </td>
+            <td>${getStatusBadge(wo.status)}</td>
+            <td>${getPriorityBadge(wo.priority)}</td>
+            <td>
+                <div id="materials-${wo.wonum}" class="materials-check-container">
+                    <button class="btn btn-sm btn-outline-secondary materials-check-btn"
+                            onclick="checkMaterials('${wo.wonum}', '${wo.siteid}')"
+                            title="Check for planned materials">
+                        <i class="fas fa-boxes"></i>
+                        <span class="d-none d-md-inline ms-1">Check Materials</span>
+                    </button>
+                </div>
+            </td>
+            <td>${wo.worktype || '-'}</td>
+            <td>${wo.assignedto || '-'}</td>
+            <td>${wo.location || '-'}</td>
+            <td>${wo.assetnum || '-'}</td>
+            <td>
+                ${wo.reportdate ? `<small>${wo.reportdate.substring(0, 10)}</small>` : '<span class="text-muted">-</span>'}
+            </td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-success" onclick="executeIndividualMethod('approve', '${wo.wonum}')" title="Approve">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button class="btn btn-sm btn-primary" onclick="executeIndividualMethod('start', '${wo.wonum}')" title="Start">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="btn btn-sm btn-warning" onclick="executeIndividualMethod('complete', '${wo.wonum}')" title="Complete">
+                        <i class="fas fa-flag-checkered"></i>
+                    </button>
+                    <a href="/enhanced-workorder-details/${wo.wonum}" class="btn btn-sm btn-outline-info" title="View Details">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+
+    // Reset selection count
+    updateSelectedCount();
+}
+
+function getStatusBadge(status) {
+    if (!status) return '<span class="text-muted">-</span>';
+
+    const statusClasses = {
+        'APPR': 'bg-success', 'READY': 'bg-success',
+        'ASSIGN': 'bg-primary', 'INPRG': 'bg-primary',
+        'WAPPR': 'bg-warning', 'WGOVT': 'bg-warning', 'WMATL': 'bg-warning', 'WSERV': 'bg-warning', 'WSCH': 'bg-warning',
+        'PACK': 'bg-secondary', 'DEFER': 'bg-secondary'
+    };
+
+    const badgeClass = statusClasses[status] || 'bg-info';
+    return `<span class="badge ${badgeClass}">${status}</span>`;
+}
+
+function getPriorityBadge(priority) {
+    if (!priority) return '<span class="text-muted">-</span>';
+
+    const priorityNum = parseInt(priority);
+    let badgeClass = 'bg-success';
+
+    if (priorityNum <= 2) badgeClass = 'bg-danger';
+    else if (priorityNum <= 3) badgeClass = 'bg-warning';
+
+    return `<span class="badge ${badgeClass}">${priority}</span>`;
+}
+
+function updatePagination(result) {
+    const pagination = document.getElementById('pagination');
+
+    if (result.total_pages <= 1) {
+        pagination.innerHTML = '';
+        return;
+    }
+
+    let paginationHTML = '';
+
+    // Previous button
+    if (result.has_prev) {
+        paginationHTML += `
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="performSearch(${result.page - 1})">Previous</a>
+            </li>
+        `;
+    }
+
+    // Page numbers
+    const startPage = Math.max(1, result.page - 2);
+    const endPage = Math.min(result.total_pages, result.page + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+        const isActive = i === result.page;
+        paginationHTML += `
+            <li class="page-item ${isActive ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="performSearch(${i})">${i}</a>
+            </li>
+        `;
+    }
+
+    // Next button
+    if (result.has_next) {
+        paginationHTML += `
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="performSearch(${result.page + 1})">Next</a>
+            </li>
+        `;
+    }
+
+    pagination.innerHTML = paginationHTML;
+}
+
+function showErrorState(errorMessage) {
+    const tableBody = document.getElementById('workordersTableBody');
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="13" class="text-center p-4 text-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Error: ${errorMessage}
+            </td>
+        </tr>
+    `;
+}
+
+// Selection management functions
+function updateSelectedCount() {
+    const checkboxes = document.querySelectorAll('.work-order-checkbox:checked');
+    const count = checkboxes.length;
+
+    // Update select all checkbox state
+    const allCheckboxes = document.querySelectorAll('.work-order-checkbox');
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+
+    if (count === 0) {
+        selectAllCheckbox.indeterminate = false;
+        selectAllCheckbox.checked = false;
+    } else if (count === allCheckboxes.length) {
+        selectAllCheckbox.indeterminate = false;
+        selectAllCheckbox.checked = true;
+    } else {
+        selectAllCheckbox.indeterminate = true;
+    }
+}
+
+function toggleAllWorkOrders() {
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const checkboxes = document.querySelectorAll('.work-order-checkbox');
+
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked;
+    });
+
+    updateSelectedCount();
+}
+
+function selectAllWorkOrders() {
+    const checkboxes = document.querySelectorAll('.work-order-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    updateSelectedCount();
+}
+
+function clearAllSelections() {
+    const checkboxes = document.querySelectorAll('.work-order-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    updateSelectedCount();
+}
+
+// Materials availability checking
+async function checkMaterials(wonum, siteid) {
+    const container = document.getElementById(`materials-${wonum}`);
+    const button = container.querySelector('.materials-check-btn');
+
+    // Show loading state
+    button.disabled = true;
+    button.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"></div>';
+
+    try {
+        const startTime = Date.now();
+        const response = await fetch(`/api/workorder/${wonum}/materials-availability`);
+        const result = await response.json();
+        const checkTime = (Date.now() - startTime) / 1000;
+
+        if (result.success) {
+            const availability = result.availability;
+
+            if (availability.has_materials) {
+                // Show green badge with count
+                container.innerHTML = `
+                    <span class="badge bg-success materials-badge" title="Found ${availability.total_materials} materials across ${availability.tasks_with_materials} tasks${availability.cache_hit ? ' (cached)' : ''}">
+                        <i class="fas fa-boxes me-1"></i>
+                        ${availability.total_materials} Material <br> Request${availability.total_materials !== 1 ? 's' : ''}
+                    </span>
+                `;
+            } else {
+                // Show gray badge indicating no materials
+                container.innerHTML = `
+                    <span class="badge bg-secondary materials-badge" title="No planned materials found${availability.cache_hit ? ' (cached)' : ''}">
+                        <i class="fas fa-box-open me-1"></i>
+                        No Materials
+                    </span>
+                `;
+            }
+
+            console.log(`📦 Materials check for WO ${wonum}: ${availability.total_materials} materials in ${checkTime.toFixed(3)}s${availability.cache_hit ? ' (cached)' : ''}`);
+
+        } else {
+            // Show error state
+            container.innerHTML = `
+                <span class="badge bg-danger materials-badge" title="Error checking materials: ${result.error}">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    Error
+                </span>
+            `;
+        }
+
+    } catch (error) {
+        console.error('Error checking materials:', error);
+        // Show error state
+        container.innerHTML = `
+            <span class="badge bg-danger materials-badge" title="Network error: ${error.message}">
+                <i class="fas fa-exclamation-triangle me-1"></i>
+                Error
+            </span>
+        `;
+    }
+}
+
+// Individual work order actions
+async function executeIndividualMethod(methodName, wonum) {
+    if (!confirm(`Are you sure you want to execute "${methodName}" on work order ${wonum}?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/workorder/${wonum}/${methodName}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({})
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert(`Successfully executed ${methodName} on work order ${wonum}`);
+            // Refresh current search
+            performSearch(currentPage);
+        } else {
+            alert(`Error executing ${methodName}: ${result.error || 'Unknown error'}`);
+        }
+
+    } catch (error) {
+        alert(`Network error: ${error.message}`);
+    }
+}
+
+// Function to refresh materials check for a specific work order
+async function refreshMaterialsCheck(wonum, siteid) {
+    console.log(`🔄 Refreshing materials check for WO ${wonum}`);
+
+    try {
+        // Clear materials cache first
+        const cacheResponse = await fetch('/api/task/planned-materials/cache/clear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const cacheResult = await cacheResponse.json();
+        if (cacheResult.success) {
+            console.log('✅ Materials cache cleared, re-checking materials...');
+
+            // Re-run the materials check
+            await checkMaterials(wonum, siteid);
+        } else {
+            console.error('❌ Failed to clear materials cache:', cacheResult.error);
+        }
+    } catch (error) {
+        console.error('❌ Error refreshing materials check:', error);
+    }
+}
+
+// Global function to refresh all materials checks (called after material addition)
+async function refreshAllMaterialsChecks() {
+    console.log('🔄 Refreshing all materials checks after material addition...');
+
+    try {
+        // Clear materials cache first
+        const cacheResponse = await fetch('/api/task/planned-materials/cache/clear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const cacheResult = await cacheResponse.json();
+        if (cacheResult.success) {
+            console.log('✅ Materials cache cleared for all work orders');
+
+            // Find all materials badges that are currently showing data (not buttons)
+            const materialsBadges = document.querySelectorAll('.materials-badge');
+            materialsBadges.forEach(badge => {
+                const container = badge.closest('.materials-check-container');
+                if (container) {
+                    const containerId = container.id;
+                    const wonum = containerId.replace('materials-', '');
+
+                    // Reset to button state for re-checking
+                    container.innerHTML = `
+                        <button class="btn btn-sm btn-outline-secondary materials-check-btn"
+                                onclick="checkMaterials('${wonum}', '')"
+                                title="Check for planned materials">
+                            <i class="fas fa-boxes"></i>
+                            <span class="d-none d-md-inline ms-1">Check Materials</span>
+                        </button>
+                    `;
+                }
+            });
+
+            console.log('🔄 Reset materials check buttons - user can re-check as needed');
+        } else {
+            console.error('❌ Failed to clear materials cache:', cacheResult.error);
+        }
+    } catch (error) {
+        console.error('❌ Error refreshing all materials checks:', error);
+    }
+}
+</script>
+
+{% endblock %}
